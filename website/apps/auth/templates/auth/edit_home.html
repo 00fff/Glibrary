@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Edit{% endblock title %}
+{% block content %}
+<h1>Change your information Here</h1>
+
+<form action="{{ url_for('auth.edit') }}" method="POST">
+    <label for="username">Change Username: </label><br>
+    <input type="text" id="username" name="username" placeholder="New Username"><br>
+    <label for="current_password">Current Password:</label><br>
+    <input type="password" id="current_password" name="current_password" placeholder="Current Password"><br><br>
+    <label for="new_password">New Password:</label><br>
+    <input type="password" id="new_password" name="new_password" placeholder="New Password"><br><br>
+    <label for="email">Email: </label><br>
+    <input type="email" id="email" name="email" placeholder="New Email"><br><br>
+    <label for="description">Tell us about yourself:</label><br>
+    <textarea id="description" name="description" rows="4" cols="50" placeholder="New Description"></textarea><br>
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock content %}

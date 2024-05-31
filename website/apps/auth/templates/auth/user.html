@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% block title %}
+{% if session.username %}
 {{ username }}
+{% else %}
+My Page
+{% endif %}
 {% endblock title %}
 {% block content %}
-{{ username }}
+{{ session.username }} - <a href="{{ url_for('auth.edit') }}">Edit Page</a>
+<br>{{ session.description }}</br>
+{{ description }}
 {% endblock content %}

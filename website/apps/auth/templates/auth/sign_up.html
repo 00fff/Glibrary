@@ -9,6 +9,13 @@
   <input type="password" id="password" name="password" value=""><br><br>
   <label for="email">Email: </label><br>
   <input type="email" id="email" name="email" value=""><br><br>
+  <label for="description">Tell us about your self!:</label><br>
+  <input type="description" id="description" name="description" value=""><br>
+  <label for="profile_picture">Profile Picture</label>
+        <input type="file" class="form-control-file" id="profile_picture" name="profile_picture">
+        <img src="{{ url_for('static', filename=profile_picture) }}">
+
+    </div>
   <input type="submit" value="Submit">
 </form>
 {% endblock content %}
