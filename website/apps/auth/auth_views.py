@@ -114,9 +114,9 @@ def edit():
                 return redirect(url_for('auth.edit'))
             
             existing_user.username = new_username
-            print(f'current exitings username{existing_user.username}')
+            # print(f'current exitings username{existing_user.username}')
             session['username'] = new_username
-            print(f'session username{session['username']}')
+            # print(f'session username{session['username']}')
         if new_email:
             existing_user.email = new_email
             session['email'] = new_email

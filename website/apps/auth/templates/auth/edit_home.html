@@ -16,5 +16,11 @@
     <textarea id="description" name="description" rows="4" cols="50" placeholder="New Description"></textarea><br>
     <input type="submit" value="Submit">
 </form>
-
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{message}}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 {% endblock content %}

@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from .views import views as main_views
 from flask_migrate import Migrate
 from .apps.auth import auth_views
+from .apps.data import data_views
 from .database import db  # Import db from your database module
 from flask_login import LoginManager, UserMixin
 from datetime import timedelta
@@ -23,5 +24,5 @@ def create_app():
     # Register blueprints
     app.register_blueprint(main_views, url_prefix='/')
     app.register_blueprint(auth_views.auth, url_prefix='/auth')
-
+    app.register_blueprint(data_views.data, url_prefix='/data')
     return app
