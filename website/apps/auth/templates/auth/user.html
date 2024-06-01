@@ -10,4 +10,10 @@ My Page
 {{ session.username }} - <a href="{{ url_for('auth.edit') }}">Edit Page</a>
 <br>{{ session.description }}</br>
 {{ description }}
+<h1>My Games:</h1>
+<ul>
+    {% for game in user.owned_games %}
+        <li>{{ game.title }} - {{ game.genre }} - {{ game.rating }}</li>
+    {% endfor %}
+</ul>
 {% endblock content %}

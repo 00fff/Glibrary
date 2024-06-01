@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from .models import User
+from website.apps.share_models import User
 from werkzeug.utils import secure_filename
 from website.database import db
 import os 
@@ -82,9 +82,11 @@ def allowed_file(filename):
 def user():
     # Retrieve username and email from session
     username = session.get('username')
+    user = User.query.filter_by(username=username).first()
+    username = session.get('username')
     email = session.get('email')
     # Render user template
-    return render_template('user.html', username=username, email=email)
+    return render_template('user.html', username=username, email=email, user=user)
 
 
 @auth.route('/edit', methods=["POST", "GET"])

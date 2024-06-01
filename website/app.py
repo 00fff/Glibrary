@@ -8,6 +8,7 @@ from .apps.data import data_views
 from .database import db  # Import db from your database module
 from flask_login import LoginManager, UserMixin
 from datetime import timedelta
+from website.apps.share_models import Game, User
 
 def create_app():
     app = Flask(__name__, template_folder="templates")
@@ -18,6 +19,7 @@ def create_app():
     app.static_folder = 'static'
     # Initialize SQLAlchemy with the Flask app
     db.init_app(app)
+    
     migrate = Migrate(app, db)
     # Initialize Flask-Login
     
