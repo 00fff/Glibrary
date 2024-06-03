@@ -45,7 +45,7 @@ def logout():
 def sign_up():
     if request.method == 'POST':
         username = request.form.get('username')
-        email = request.form.get('email')
+        email = request.form.get('email').lower()  # Convert email to lowercase
         password = request.form.get('password')
         description = request.form.get('description')
         
@@ -76,12 +76,14 @@ def sign_up():
     
     return render_template('sign_up.html')
 
+
 @auth.route('/mypage')
 def user():
     username = session.get('username')
     user = User.query.filter_by(username=username).first()
-    email = session.get('email')
+    email = session.get('email').lower()  # Convert session email to lowercase
     return render_template('user.html', username=username, email=email, user=user)
+
 
 @auth.route('/edit', methods=["POST", "GET"])
 def edit():
@@ -95,28 +97,34 @@ def edit():
         current_password = request.form.get('current_password')
         new_password = request.form.get('new_password')
         new_username = request.form.get('username')
-        new_email = request.form.get('email')
+        new_email = request.form.get('email').lower()  # Convert new email to lowercase
         new_description = request.form.get('description')
 
-        if not check_password_hash(existing_user.password, hash_password_sha256(current_password)):
+        # Check if the current password is correct
+        if existing_user.password != hash_password_sha256(current_password):
             flash('Incorrect current password!', category='error')
             return redirect(url_for('auth.edit'))
 
+        # Check if the new username already exists (if it is different from the current username)
         if new_username and new_username != username and User.query.filter_by(username=new_username).first():
             flash('Username already exists!', category='error')
             return redirect(url_for('auth.edit'))
 
+        # Update username if provided
         if new_username:
             existing_user.username = new_username
             session['username'] = new_username
-        
+
+        # Update email if provided
         if new_email:
             existing_user.email = new_email
             session['email'] = new_email
-        
+
+        # Update description if provided
         if new_description:
             existing_user.description = new_description
-        
+
+        # Update password if provided
         if new_password:
             hashed_new_password = hash_password_sha256(new_password)
             existing_user.password = hashed_new_password

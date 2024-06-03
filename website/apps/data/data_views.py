@@ -16,7 +16,6 @@ def search():
         # Handle the POST request
         query = request.form.get('query')  # Ensure this matches the form field name
         game_info = get_game(query)
-        print(game_info)
         if game_info:
             return render_template('search.html', game_info=game_info)
         else:
@@ -32,20 +31,18 @@ def game():
         return redirect(url_for('auth.login'))  # Redirect to login if user not logged in
     username = session['username']
     if request.method == "POST":
-        # Retrieve game details from the form
-        title = request.form.get('title')
-        description = request.form.get('description')
-        art = request.form.get('art')
-        platform = request.form.get('platform')
-        genre = request.form.get('genre')
-        release_date_str = request.form.get('release_date')  # Get the date string from the form
-
-        # Convert the date string to a Python date object
-        release_date = datetime.strptime(release_date_str, '%Y-%m-%d').date()
-
-        developer = request.form.get('developer')
-        publisher = request.form.get('publisher')
-        rating = request.form.get('rating')
+        game_name = request.form.get('game_name')
+        if game_name:
+            add_game = get_game(game_name)
+            title = add_game.get('name')
+            description = add_game.get('summary')
+            art = add_game.get('summary')
+            platform = add_game.get('platform')
+            genre = add_game.get('genre')
+            release_date = add_game.get('release_date')
+            developer = add_game.get('developer')
+            publisher = add_game.get('publisher')
+            rating = add_game.get('rating')
 
         # Create a new Game object
         new_game = Game(title=title, description=description, art=art, platform=platform, genre=genre, 

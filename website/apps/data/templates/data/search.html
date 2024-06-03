@@ -6,6 +6,11 @@
 {% if game_info %}
     <p>Name of the game: {{ game_info.name }}</p>
     <p>Game description: {{ game_info.summary }}</p>
+    <form method="post" action="{{ url_for('data.game') }}">
+        <!-- Hidden input field to store the game's name -->
+        <input type="hidden" name="game_name" value="{{ game_info.name }}">
+        <button type="submit">Add to list</button>
+    </form>
     <hr>
 {% else %}
     <p>{{ error_message }}</p>

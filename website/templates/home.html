@@ -1,0 +1,10 @@
+<!-- templates/data/search.html -->
+{% extends "base.html" %}
+{% block title %}Home{% endblock title %}
+{% block content %}
+<h1>Top Games:</h1>
+{% for game in games %}
+    {{ game.name }}
+    <br />
+{% endfor %}
+{% endblock content %}

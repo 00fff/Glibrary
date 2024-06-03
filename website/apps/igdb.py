@@ -30,6 +30,17 @@ def get_game(query):
     else:
         return None  # Return None if no game is found
 
+def get_cover(game_id, headers):
+    access_token = get_access_token()
+    headers = {
+        'Client-ID': CLIENT_ID,
+        'Authorization': f'Bearer {access_token}'
+    }
+    endpoint = 'https://api.igdb.com/v4/covers'
+    data = f'fields url; where id = {game_id};'
+    response = requests.post(endpoint, headers=headers, data=data)
+    covers = response.json()
+    return covers 
 
 def top_games():
     access_token = get_access_token()
@@ -38,8 +49,15 @@ def top_games():
         'Authorization': f'Bearer {access_token}'
     }
     endpoint = 'https://api.igdb.com/v4/games'
-    data = f'search *; fields name, summary; where rating > 75; limit 50;'
+    data = 'fields name, summary, rating; where rating >= 90; sort rating desc; limit 50;'
     response = requests.post(endpoint, headers=headers, data=data)
-    game_info = response.json()
-    return game_info
-
+    if response.status_code == 200:
+        game_info = response.json()
+        for game in game_info:
+            id = game["id"]
+            # cover = get_cover(id, headers=headers)
+            # return cover
+        return game_info
+    else:
+        print(f"Error {response.status_code}: {response.text}")
+        return None
