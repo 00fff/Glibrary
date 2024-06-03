@@ -54,7 +54,7 @@ def sign_up():
             else:
                 flash('Invalid file format!', category='error')
 
-        hashed_password = generate_password_hash(password, method="sha256")
+        hashed_password = generate_password_hash(password, method="pbkdf2:sha256")
         new_user = User(username=username, email=email, password=hashed_password, description=description)
         db.session.add(new_user)
         db.session.commit()
@@ -109,7 +109,7 @@ def edit():
             existing_user.description = new_description
         
         if new_password:
-            hashed_new_password = generate_password_hash(new_password, method='sha256')
+            hashed_new_password = generate_password_hash(new_password, method="pbkdf2:sha256")
             existing_user.password = hashed_new_password
 
         db.session.commit()

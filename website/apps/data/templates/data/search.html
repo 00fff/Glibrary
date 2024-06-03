@@ -1,6 +1,13 @@
+<!-- templates/data/search.html -->
 {% extends "base.html" %}
-{% block title %}Log Out{% endblock title %}
+{% block title %}Game Search Results{% endblock title %}
 {% block content %}
-<h1>search screen</h1>
-{{ message }}
+<h1>Game results:</h1>
+{% if game_info %}
+    <p>Name of the game: {{ game_info.name }}</p>
+    <p>Game description: {{ game_info.summary }}</p>
+    <hr>
+{% else %}
+    <p>{{ error_message }}</p>
+{% endif %}
 {% endblock content %}
