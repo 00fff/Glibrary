@@ -1,14 +1,21 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from website.apps.share_models import User
 from werkzeug.utils import secure_filename
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 from website.database import db
 import os
+import hashlib
 
 auth = Blueprint('auth', __name__, template_folder='templates/auth')
 
 UPLOAD_FOLDER = 'path/to/upload/folder'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+def hash_password_sha256(password):
+    return hashlib.sha256(password.encode('utf-8')).hexdigest()
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @auth.route('/login', methods=["POST", "GET"])
 def login():
@@ -16,7 +23,8 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
         existing_user = User.query.filter_by(email=email).first()
-        if existing_user and check_password_hash(existing_user.password, password):
+        
+        if existing_user and existing_user.password == hash_password_sha256(password):
             flash("Logged in", category="success")
             session['username'] = existing_user.username
             session['email'] = existing_user.email
@@ -24,6 +32,7 @@ def login():
         else:
             flash('Invalid email or password!', category='error')
             return redirect(url_for('auth.login'))
+    
     return render_template('login.html')
 
 @auth.route('/logout')
@@ -37,14 +46,14 @@ def sign_up():
     if request.method == 'POST':
         username = request.form.get('username')
         email = request.form.get('email')
-
+        password = request.form.get('password')
+        description = request.form.get('description')
+        
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
             flash('Username already exists!', category='error')
             return redirect(url_for('auth.sign_up'))
-
-        password = request.form.get('password')
-        description = request.form.get('description')
+        
         if 'profile_picture' in request.files:
             profile_picture = request.files['profile_picture']
             if profile_picture.filename != '' and allowed_file(profile_picture.filename):
@@ -54,7 +63,7 @@ def sign_up():
             else:
                 flash('Invalid file format!', category='error')
 
-        hashed_password = generate_password_hash(password, method="pbkdf2:sha256")
+        hashed_password = hash_password_sha256(password)
         new_user = User(username=username, email=email, password=hashed_password, description=description)
         db.session.add(new_user)
         db.session.commit()
@@ -89,7 +98,7 @@ def edit():
         new_email = request.form.get('email')
         new_description = request.form.get('description')
 
-        if not check_password_hash(existing_user.password, current_password):
+        if not check_password_hash(existing_user.password, hash_password_sha256(current_password)):
             flash('Incorrect current password!', category='error')
             return redirect(url_for('auth.edit'))
 
@@ -109,7 +118,7 @@ def edit():
             existing_user.description = new_description
         
         if new_password:
-            hashed_new_password = generate_password_hash(new_password, method="pbkdf2:sha256")
+            hashed_new_password = hash_password_sha256(new_password)
             existing_user.password = hashed_new_password
 
         db.session.commit()
@@ -117,6 +126,3 @@ def edit():
         return redirect(url_for('auth.user'))
 
     return render_template('edit_home.html', user=existing_user)
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
