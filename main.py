@@ -1,5 +1,6 @@
 from website.app import create_app
 from website.apps.share_models import User, Game
+from website.apps.cache_config import cache
 
 app = create_app()
 
