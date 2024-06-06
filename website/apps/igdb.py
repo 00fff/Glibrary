@@ -80,7 +80,7 @@ def get_game(query):
                 platform_name = get_platform_name(pid, headers)
                 platform_names.append(platform_name)
             
-            cover_url = None
+            cover_url = "https://upload.wikimedia.org/wikipedia/commons/0/06/Question-mark.jpg"
             cover_data = game_data.get('cover')
             if cover_data:
                 cover_id = get_cover(cover_data, headers=headers)
