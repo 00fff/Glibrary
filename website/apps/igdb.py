@@ -4,6 +4,8 @@ from website.apps.share_models import Game, User
 from datetime import datetime, date
 from website.apps.cache_config import cache
 from website.database import db
+from flask_mail import Message
+from website.apps.mail import mail
 
 CLIENT_ID = 'w69saddrm609bdexx1qv7k8334kspc'
 CLIENT_SECRET = 'raegpu6z9tovkh7j92mch8mk7uf31t'

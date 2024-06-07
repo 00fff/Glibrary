@@ -7,13 +7,28 @@ My Page
 {% endif %}
 {% endblock title %}
 {% block content %}
-{{ session.username }} - <a href="{{ url_for('auth.edit') }}">Edit Page</a>
-<br>{{ session.description }}</br>
+{{ user.username }} - <a href="{{ url_for('auth.edit') }}">Edit Page</a>
+<br>{{ user.description }}</br>
 {{ description }}
 <h1>My Games:</h1>
 <ul>
     {% for game in user.owned_games %}
-        <li>{{ game.title }} - {{ game.genre }} - {{ game.rating }}</li>
+    <form action="{{ url_for('data.game') }}" method="GET" style="display:inline;">
+      <button type="submit" style="background:transparent; border:none; color:transparent;">
+         <input type="hidden" name="game" value="{{ game.name }}">
+         <img src="{{ game.art }}" alt="Italian Trulli" width="70" height="100">
+      </button>
+  </form>
+    <i>{{ game.title }}</i>
+    <br />
     {% endfor %}
+
 </ul>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+       {% for message in messages %}
+          {{ message }}
+       {% endfor %}
+    {% endif %}
+ {% endwith %}
 {% endblock content %}

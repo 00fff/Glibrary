@@ -1,12 +1,17 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from website.apps.share_models import User
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
+from website.apps.share_models import User, Game
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash
 from website.database import db
+from flask_mail import Message
+from website.apps.mail import mail
 import os
 import hashlib
 
 auth = Blueprint('auth', __name__, template_folder='templates/auth')
+
+
+
 
 UPLOAD_FOLDER = 'path/to/upload/folder'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -16,6 +21,11 @@ def hash_password_sha256(password):
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+def welcome_email(username, sender, recipients):
+    msg = Message(subject=f"Welcome To GameLibrary, {username}", sender={sender}, recipients=[recipients])
+    msg.body = "Have Fun Gathering Your favorite games"
+    mail.send(msg)
+
 
 @auth.route('/login', methods=["POST", "GET"])
 def login():
@@ -68,7 +78,6 @@ def sign_up():
         db.session.add(new_user)
         db.session.commit()
         flash('Account created successfully!', category='success')
-        
         session['username'] = username
         session['email'] = email
         
@@ -77,11 +86,23 @@ def sign_up():
     return render_template('sign_up.html')
 
 
-@auth.route('/mypage')
+@auth.route('/mypage', methods=["POST", "GET"])
 def user():
     username = session.get('username')
     user = User.query.filter_by(username=username).first()
     email = session.get('email').lower()  # Convert session email to lowercase
+    if request.method == 'POST':
+        game = request.form.get("game_name")
+        game = Game.query.filter_by(title=game).first()
+        if game in user.owned_games:
+            flash("Game Already in Game Library")
+            # welcome_email(username, 'mawt3ni@gmail.com', 'harithsullaiman@gmail.com')
+            return render_template('user.html', username=username, email=email, user=user)
+        else:
+            user.owned_games.append(game)
+            db.session.commit()
+            flash("Game Added Successfully")
+        return render_template('user.html', username=username, email=email, user=user)
     return render_template('user.html', username=username, email=email, user=user)
 
 

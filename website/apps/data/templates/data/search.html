@@ -15,8 +15,7 @@
         {% else %}
             <p>Rating: N/A</p>
         {% endif %}
-        <form method="post" action="{{ url_for('data.search') }}">
-            <!-- Hidden input field to store the game's name -->
+        <form method="post" action="{{ url_for('auth.user') }}">
             <input type="hidden" name="game_name" value="{{ game.name }}">
             <button type="submit">Add to list</button>
         </form>

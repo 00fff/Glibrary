@@ -1,6 +1,7 @@
 # models.py
 from website.database import db
 from datetime import datetime
+
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)

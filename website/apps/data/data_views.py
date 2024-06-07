@@ -7,7 +7,6 @@ from website.apps.igdb import get_game, top_games
 data = Blueprint('data', __name__, template_folder='templates/data')
 from website.apps.cache_config import cache
 
-
 CLIENT_ID = 'w69saddrm609bdexx1qv7k8334kspc'
 CLIENT_SECRET = 'raegpu6z9tovkh7j92mch8mk7uf31t'
 
@@ -37,5 +36,11 @@ def search():
                 return render_template('search.html', error_message=error_message)
     else:
         return render_template('search.html')
-    
+
+@data.route('/game', methods=["POST", "GET"])
+def game():
+    if request.method == "GET":
+        game = request.form.get('game')
+        
+    return render_template('game.html')
 
