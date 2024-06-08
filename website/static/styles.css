@@ -1,0 +1,14 @@
+body {
+    background-color: #e4d2b7; /* Hexadecimal color code for linen */
+    color: #000000;
+}
+img {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  #game_art {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 50px;
+  }

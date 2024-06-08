@@ -40,7 +40,6 @@ def search():
 @data.route('/game', methods=["POST", "GET"])
 def game():
     if request.method == "GET":
-        game = request.form.get('game')
-        
-    return render_template('game.html')
-
+        game_name = request.args.get('game')
+        game = Game.query.filter_by(title=game_name).first()
+    return render_template('game.html', game=game)

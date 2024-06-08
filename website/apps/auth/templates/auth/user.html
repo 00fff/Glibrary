@@ -1,34 +1,37 @@
 {% extends "base.html" %}
+
 {% block title %}
 {% if session.username %}
-{{ username }}
+{{ session.username }}
 {% else %}
 My Page
 {% endif %}
 {% endblock title %}
+
 {% block content %}
 {{ user.username }} - <a href="{{ url_for('auth.edit') }}">Edit Page</a>
 <br>{{ user.description }}</br>
-{{ description }}
+
 <h1>My Games:</h1>
 <ul>
-    {% for game in user.owned_games %}
-    <form action="{{ url_for('data.game') }}" method="GET" style="display:inline;">
-      <button type="submit" style="background:transparent; border:none; color:transparent;">
-         <input type="hidden" name="game" value="{{ game.name }}">
-         <img src="{{ game.art }}" alt="Italian Trulli" width="70" height="100">
-      </button>
-  </form>
-    <i>{{ game.title }}</i>
-    <br />
-    {% endfor %}
-
+{% for game in user.owned_games %}
+    <li>
+        <form action="{{ url_for('data.game') }}" method="GET" style="display:inline;">
+            <button type="submit" style="background:transparent; border:none; color:transparent;">
+                <input type="hidden" name="game" value="{{ game.title }}">
+                <img src="{{ game.art }}" alt="Game Art" width="70" height="100">
+            </button>
+        </form>
+        <i>{{ game.title }}</i>
+    </li>
+{% endfor %}
 </ul>
+
 {% with messages = get_flashed_messages() %}
     {% if messages %}
-       {% for message in messages %}
-          {{ message }}
-       {% endfor %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
     {% endif %}
- {% endwith %}
+{% endwith %}
 {% endblock content %}
