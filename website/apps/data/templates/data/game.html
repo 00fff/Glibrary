@@ -8,24 +8,27 @@
     <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
     <h1>{{ game.title }}</h1>
     <img src="{{ game.art }}" alt="{{ game.title }}" width="240" height="360" id="game_art"> 
-    <p>Description: {{ game.description }}</p>
     {% for platform in game.platform.split(', ') %}
         {% if platform == "Linux" %} 
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Tux.png" width="230" height="300" alt="Linux">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/af/Tux.png" alt="Linux">
         {% elif platform == "PC (Microsoft Windows)" %}
-            <img src="https://static.vecteezy.com/system/resources/previews/020/975/574/non_2x/window-10-logo-window-10-icon-transparent-free-png.png" width="320" height="330" alt="Windows">
+            <img src="https://static.vecteezy.com/system/resources/previews/020/975/574/non_2x/window-10-logo-window-10-icon-transparent-free-png.png"  alt="Windows">
         {% elif platform == "Mac" %}
-            <img src="https://cdn.freebiesupply.com/images/large/2x/apple-logo-transparent.png" width="270" height="280" alt="Mac">
+            <img src="https://cdn.freebiesupply.com/images/large/2x/apple-logo-transparent.png"  alt="Mac">
         {% elif platform == "PlayStation 4" %}
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/PlayStation_logo.svg/2560px-PlayStation_logo.svg.png" width="290" height="250" alt="PS4">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/PlayStation_logo.svg/2560px-PlayStation_logo.svg.png"  alt="PS4">
         {% elif platform == "Xbox One" %}
-        <img src="https://www.freepnglogos.com/uploads/xbox-games-logo-symbol-19.png" width="290" height="250" alt="PS4">
+        <img src="https://www.freepnglogos.com/uploads/xbox-games-logo-symbol-19.png"  alt="PS4">
         {% elif platform == "Nintendo Switch" %}
-        <img src="https://cdn.icon-icons.com/icons2/2648/PNG/512/logo_nintendo_switch_icon_160744.png" width="290" height="250" alt="PS4">
+        <img src="https://cdn.icon-icons.com/icons2/2648/PNG/512/logo_nintendo_switch_icon_160744.png"  alt="PS4">
         {% else %}
-            <p>Platform: {{ platform }}</p>
         {% endif %}
     {% endfor %}
+        {% if "PlayStation Vita" in platforms %}
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/PlayStation_logo.svg/2560px-PlayStation_logo.svg.png" width="290" height="250" alt="PlayStation Vita">
+            <p>Platform: PlayStation Vita</p>
+        {% endif %}
+    <p id="description">Description: {{ game.description }}</p>
     <p>Genre: {{ game.genre }}</p>
     <p>Release Date: {{ game.release_date }}</p>
     <p>Rating: {{ game.rating }}</p>

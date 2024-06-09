@@ -2,11 +2,12 @@
 
 {% block title %}Home{% endblock title %}
 {% block content %}
-<h1>Top Games:</h1>
+<link href="{{ url_for('static', filename='home.css') }}" rel="stylesheet" type="text/css">
+<h1 id="top-games-heading">Top Games</h1>
 
 {% for game in games %}
+    <img src="{{ game.art }}" alt="game_art">
     {{ game.name }}
     <br />
 {% endfor %}
 {% endblock content %}
-
