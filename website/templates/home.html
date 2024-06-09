@@ -6,8 +6,16 @@
 <h1 id="top-games-heading">Top Games</h1>
 
 {% for game in games %}
-    <img src="{{ game.art }}" alt="game_art">
-    {{ game.name }}
-    <br />
+    <div class="game">
+        <img src="{{ game.art }}" alt="game_art">
+        <h2>{{ game.title }}</h2>
+        <p>{{ game.description }}</p>
+        <p><strong>Rating:</strong> {{ game.rating }}</p>
+        <p><strong>Platforms:</strong> {{ game.platform }}</p>
+        <p><strong>Genres:</strong> {{ game.genre }}</p>
+        <p><strong>Release Date:</strong> {{ game.release_date }}</p>
+        <p><strong>Developers:</strong> {{ game.developer }}</p>
+        <p><strong>Publishers:</strong> {{ game.publisher }}</p>
+    </div>
 {% endfor %}
 {% endblock content %}

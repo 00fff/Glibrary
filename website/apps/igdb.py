@@ -131,17 +131,60 @@ def top_games():
         'Authorization': f'Bearer {access_token}'
     }
     endpoint = 'https://api.igdb.com/v4/games'
-    data = 'fields name, summary, rating; where rating >= 90; sort rating desc; limit 50;'
+    data = 'fields name, summary, cover, platforms, genres, first_release_date, involved_companies, rating; where rating >= 90; sort rating desc; limit 50;'
     response = requests.post(endpoint, headers=headers, data=data)
     if response.status_code == 200:
         game_info = response.json()
         for game in game_info:
             id = game["id"]
-        return game_info
+            check_game = Game.query.filter_by(game_id=id).first()
+            if not check_game:
+                cover_url = "https://upload.wikimedia.org/wikipedia/commons/0/06/Question-mark.jpg"
+                cover_data = game.get('cover')
+                if cover_data:
+                    cover_id = get_cover(cover_data, headers=headers)
+                    cover_url = cover_id[0]['url']
+                
+                formatted_date = None
+                date_timestamp = game.get('first_release_date')
+                if date_timestamp:
+                    formatted_date = datetime.utcfromtimestamp(date_timestamp).strftime('%Y-%m-%d')
+                
+                genres = game.get('genres', [])
+                genre_names = []
+                for genre_id in genres:
+                    genre_name = get_genres(genre_id, headers)
+                    genre_names.append(genre_name)
+                
+                rating = game.get('rating')
+                if rating:
+                    rating = int(rating)
+                
+                involved_companies = game.get('involved_companies', [])
+                companies = []
+                for company_id in involved_companies:
+                    company_name = get_creators(company_id, headers)
+                    companies.append(company_name)
+                
+                new_game = Game(
+                    title=game['name'],
+                    description=game.get('summary', ''),
+                    art=cover_url,
+                    platform=', '.join([get_platform_name(pid, headers) for pid in game.get('platforms', [])]),
+                    genre=', '.join(genre_names),
+                    release_date=formatted_date,
+                    developer=', '.join(companies),
+                    publisher=', '.join(companies),
+                    rating=rating
+                )
+                db.session.add(new_game)
+        db.session.commit()
+        return render_template("home.html", games=Game.query.all())
     else:
         print(f"Error {response.status_code}: {response.text}")
-        return None
-default_cover_url = "https://upload.wikimedia.org/wikipedia/commons/0/06/Question-mark.jpg"
+        return render_template("home.html", games=[])
+
+
 
 def add_game_to_database(game_data):
     """
