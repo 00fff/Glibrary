@@ -7,5 +7,4 @@ def home():
     games = top_games()
     if games is None:
         flash('Error retrieving game data.', 'error')
-        games = []
     return render_template('home.html', games=games)

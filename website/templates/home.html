@@ -1,21 +1,22 @@
 {% extends "base.html" %}
+{% block title %}Game Library{% endblock title %}
 
-{% block title %}Home{% endblock title %}
 {% block content %}
 <link href="{{ url_for('static', filename='home.css') }}" rel="stylesheet" type="text/css">
-<h1 id="top-games-heading">Top Games</h1>
+<h1 id="heading">Top Games</h1>
 
-{% for game in games %}
-    <div class="game">
-        <img src="{{ game.art }}" alt="game_art">
-        <h2>{{ game.title }}</h2>
-        <p>{{ game.description }}</p>
-        <p><strong>Rating:</strong> {{ game.rating }}</p>
-        <p><strong>Platforms:</strong> {{ game.platform }}</p>
-        <p><strong>Genres:</strong> {{ game.genre }}</p>
-        <p><strong>Release Date:</strong> {{ game.release_date }}</p>
-        <p><strong>Developers:</strong> {{ game.developer }}</p>
-        <p><strong>Publishers:</strong> {{ game.publisher }}</p>
-    </div>
-{% endfor %}
+<div class="game-container">
+    {% for game in games %}
+        <form action="{{ url_for('data.game') }}" method="Get" class="game-form">
+            <button type="submit" class="game-button">
+                <input type="hidden" name="game" value="{{ game.title }}">
+                <img src="{{ game.art }}" alt="Game Art" width="90" height="150">
+                <p class="game-title">{{ game.title }}</p>
+            </button>
+        </form>
+    {% else %}
+    <p>No games available</p>
+    {% endfor %}
+</div>
+
 {% endblock content %}

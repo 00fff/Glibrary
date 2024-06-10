@@ -1,10 +1,47 @@
+/* home.css */
 body {
-    background-color: #e4d2b7; /* Hexadecimal color code for linen */
-    color: #000000;
+    background-color: #e4d2b7; /* Linen background color */
+    color: #000000; /* Black text color */
 }
 
-#top-games-heading {
-    text-align: center;
-    margin: 20px 0;
-    color: #333; /* Adjust the color as needed */
+#heading {
+    text-align: center; /* Center-align the heading */
+    margin: 40px; /* Add margin to the heading */
+    color: #333; /* Dark gray text color */
+}
+
+.game-container {
+    display: flex; /* Use flexbox layout */
+    flex-wrap: wrap; /* Allow items to wrap to the next line */
+    justify-content: space-around; /* Distribute items evenly with space around */
+    margin-bottom: 20px; /* Add margin at the bottom */
+}
+
+.game-form {
+    margin: 20px; /* Add margin to each game form */
+}
+
+/* home.css */
+.game-button {
+    background: transparent; /* Transparent background for button */
+    border: none; /* Remove button border */
+    cursor: pointer; /* Show pointer cursor on hover */
+    display: flex; /* Use flexbox layout */
+    flex-direction: column; /* Arrange items vertically */
+    align-items: center; /* Center-align items horizontally */
+    width: 150px; /* Set a fixed width for the buttons */
+    height: 150px; /* Set a fixed height for the buttons */
+    margin: 10px; /* Add margin to each button */
+    padding: 10px; /* Add padding to each button */
+    box-sizing: border-box; /* Include padding and border in the button's total width and height */
+}
+
+
+.game-button img {
+    margin-bottom: 20px; /* Add margin below the image */
+}
+
+.game-title {
+    font-size: 20px; /* Set font size for game title */
+    text-align: center; /* Center-align the game title */
 }

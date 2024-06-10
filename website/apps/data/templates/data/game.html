@@ -32,4 +32,8 @@
     <p>Genre: {{ game.genre }}</p>
     <p>Release Date: {{ game.release_date }}</p>
     <p>Rating: {{ game.rating }}</p>
+    <form method="POST" action="{{ url_for('auth.user') }}">
+        <input type="hidden" name="game_name" value="{{ game.title }}">
+        <button type="submit">Add to list</button>
+    </form>
 {% endblock content %}
