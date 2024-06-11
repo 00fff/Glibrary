@@ -62,6 +62,7 @@ def get_genres(genre_id, headers):
     else:
         return None
 def get_game(query):
+    query = query.lower()
     access_token = get_access_token()
     headers = {
         'Client-ID': CLIENT_ID,
@@ -75,6 +76,8 @@ def get_game(query):
     if game_info:
         processed_games = []
         for game_data in game_info:
+            title = game_data.get('name')
+            summary = game_data.get('summary')
             platforms = game_data.get('platforms', [])
             platform_names = []
             for pid in platforms:
@@ -85,7 +88,8 @@ def get_game(query):
             cover_data = game_data.get('cover')
             if cover_data:
                 cover_id = get_cover(cover_data, headers=headers)
-                cover_url = cover_id[0]['url']
+                cover_url = cover_id[0]['url'] # Use get method to handle potential missing 'url' key
+                
             
             formatted_date = None
             date_timestamp = game_data.get('first_release_date')
@@ -107,11 +111,12 @@ def get_game(query):
             for company_id in involved_companies:
                 company_name = get_creators(company_id, headers)
                 companies.append(company_name)
-            
+            game_data['title'] = title
+            game_data['description'] = summary
             game_data['genres'] = genre_names
             game_data['rating'] = rating
             game_data['platforms'] = platform_names
-            game_data['cover'] = cover_url
+            game_data['art'] = cover_url
             game_data['first_release_date'] = formatted_date
             game_data['involved_companies'] = companies
             
@@ -140,8 +145,11 @@ def top_games():
         
         for game in game_info:
             name = game.get('name')
-            if not name:
+            if name is not None:
+                name = name.lower()
+            else:
                 continue
+            
             
             # Check if the game exists in the database
             check_game = Game.query.filter_by(title=name).first()
@@ -159,14 +167,13 @@ def top_games():
                     'genres': check_game.genre.split(', ')  # Assuming genre is stored as a comma-separated string
                 }
                 games.append(check_game_data)
-                for game_data in games:
-                    print(game_data['title'])
             else:
                 cover_url = "https://upload.wikimedia.org/wikipedia/commons/0/06/Question-mark.jpg"
                 cover_data = game.get('cover')
                 if cover_data:
                     cover_id = get_cover(cover_data, headers=headers)
-                    cover_url = cover_id[0]['url']
+                    cover_url = cover_id[0]['url'] # Use get method to handle potential missing 'url' key
+
 
                 platforms = game.get('platforms', [])
                 platform_names = []
@@ -178,7 +185,7 @@ def top_games():
                 date_timestamp = game.get('first_release_date')
                 if date_timestamp:
                     formatted_date = datetime.utcfromtimestamp(date_timestamp).strftime('%Y-%m-%d')
-
+                
                 genres = game.get('genres', [])
                 genre_names = []
                 for genre_id in genres:
@@ -194,7 +201,7 @@ def top_games():
                     company_name = get_creators(company_id, headers)
                     companies.append(company_name)
 
-                description = game.get('summary', '')
+                description = game.get('summary')
 
                 new_game_data = {
                     'title': name,
@@ -220,16 +227,17 @@ def top_games():
 
 
 def add_game_to_database(game_data):
-    check_game = Game.query.filter_by(title=game_data['name']).first()
+    check_game = Game.query.filter_by(title=game_data['title']).first()
     if check_game:
         return check_game
     release_date = None
     if 'first_release_date' in game_data and game_data['first_release_date']:
         release_date = datetime.strptime(game_data['first_release_date'], '%Y-%m-%d').date()
+    
     new_game = Game(
-        title=game_data['name'],
-        description=game_data.get('description', ''),  # Use get method with default value
-        art=game_data['cover'],
+        title=game_data['title'],
+        description=game_data['description'],  # Use get method with default value
+        art=game_data['art'],
         platform=', '.join(game_data['platforms']),
         genre=', '.join(game_data['genres']),
         release_date=release_date,

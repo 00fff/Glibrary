@@ -1,15 +1,12 @@
 {% extends "base.html" %}
 {% block title %}Game Search Results{% endblock title %}
 {% block content %}
+<link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
     <h1>Game results:</h1>
     {% for game in game_info %}
-        <img src="{{ game.cover }}" alt="Italian Trulli" width="90" height="120">
-        <p>Name of the game: {{ game.name }}</p>
+        <img src="{{ game.art }}" alt="Italian Trulli" width="90" height="120">
+        <p>{{ game.name }} - {{ game.first_release_date }}</p>
         <p>Game description: {{ game.summary }}</p>
-        <p>Platforms: {{ game.platforms | join(', ') }}</p>
-        <p>Release Date: {{ game.first_release_date }}</p>
-        <p>Genre: {{ game.genres | join(', ') }}</p>
-        <p>By: {{ game.involved_companies | join(', ') }}</p>
         {% if game.rating is defined %}
             <p>Rating: {{ game.rating }}% on IGDB</p>
         {% else %}
@@ -17,7 +14,7 @@
         {% endif %}
         <form method="post" action="{{ url_for('auth.user') }}">
             <input type="hidden" name="game_name" value="{{ game.name }}">
-            <button type="submit">Add to list</button>
+            <button type="submit" class="form-button">Add to list</button>
         </form>
         <hr>
     {% else %}

@@ -92,18 +92,36 @@ def user():
     username = session.get('username')
     user = User.query.filter_by(username=username).first()
     email = session.get('email').lower()  # Convert session email to lowercase
+    
     if request.method == 'POST':
-        game = request.form.get("game_name")
-        game = Game.query.filter_by(title=game).first()
-        if game in user.owned_games:
-            flash("Game Already in Game Library")
-            # welcome_email(username, 'mawt3ni@gmail.com', 'harithsullaiman@gmail.com')
-            return render_template('user.html', username=username, email=email, user=user)
+        # Handle adding a game
+        game_title = request.form.get("game_name")
+        game = Game.query.filter_by(title=game_title).first()
+        
+        if game is not None:  # Ensure the game exists
+            if game in user.owned_games:
+                flash("Game Already in Game Library")
+            else:
+                user.owned_games.append(game)
+                db.session.commit()
+                flash("Game Added Successfully")
         else:
-            user.owned_games.append(game)
-            db.session.commit()
-            flash("Game Added Successfully")
-        return render_template('user.html', username=username, email=email, user=user)
+            flash("Game not found")
+
+        # Handle removing a game
+        remove_game_title = request.form.get("game_remove")
+        remove_game = Game.query.filter_by(title=remove_game_title).first()
+        
+        if remove_game is not None:  # Ensure the game exists
+            if remove_game in user.owned_games:
+                user.owned_games.remove(remove_game)
+                db.session.commit()
+                flash("Game Removed Successfully")
+            else:
+                flash("Game not in library")
+        else:
+            flash("Game to remove not found")
+
     return render_template('user.html', username=username, email=email, user=user)
 
 
