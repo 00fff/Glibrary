@@ -42,4 +42,6 @@ def game():
     if request.method == "GET":
         game_name = request.args.get('game')
         game = Game.query.filter_by(title=game_name).first()
-    return render_template('game2.html', game=game)
+        user = session['username']
+        user = User.query.filter_by(username=user).first()
+    return render_template('game2.html', game=game, user=user)

@@ -28,15 +28,15 @@ def get_cover(game_id, headers):
     return covers 
 
 def get_platform_name(platform_id, headers):
-    endpoint = f"https://api.igdb.com/v4/platforms/{platform_id}"
-    data = 'fields name;'
+    endpoint = "https://api.igdb.com/v4/platforms"
+    data = f'fields name; where id = {platform_id};'
     response = requests.post(endpoint, headers=headers, data=data)
+    
     if response.status_code == 200:
         platform_info = response.json()
-        if platform_info and isinstance(platform_info, list) and 'name' in platform_info[0]:
+        if platform_info:
             return platform_info[0]['name']
     return "Unknown"
-
 def get_creators(creator_id, headers):
     endpoint = 'https://api.igdb.com/v4/companies'
     access_token = get_access_token()
@@ -83,6 +83,7 @@ def get_game(query):
             for pid in platforms:
                 platform_name = get_platform_name(pid, headers)
                 platform_names.append(platform_name)
+
             
             cover_url = "https://upload.wikimedia.org/wikipedia/commons/0/06/Question-mark.jpg"
             cover_data = game_data.get('cover')
