@@ -1,0 +1,61 @@
+body {
+    background-color: #e4d2b7; /* Background color for the whole body */
+    color: #000000; /* Text color */
+    display: flex; /* Use flex layout */
+    flex-direction: column; /* Arrange children vertically */
+    height: 100vh; /* Set the body height to 100% of the viewport height */
+    margin: 0; /* Remove default margins */
+}
+
+.user-name {
+    margin: auto;
+    color: black; /* User page text color */
+    margin-bottom: 5pxx;
+}
+.game-row{
+    display: flex;
+}
+.games-box {
+    display: flex;
+    flex-wrap: wrap; /* Allow the games to wrap onto multiple rows */
+    margin-top: auto;
+    margin-left: auto;
+    padding: 20px; /* Padding for the games box */
+    max-width: 800px; /* Set a maximum width for the container */
+    background-color: black; /* Background color for the games box */
+    border-radius: 15px; /* Set border radius for rounded corners */
+    margin-right: 20px;
+    max-height: 700px;
+    overflow-y: auto;
+}
+
+.game {
+    border-radius: 15px; /* Set border radius for rounded corners */
+    background-color: gray; /* Background color for each game */
+    margin: 5px; /* Margin around each game */
+    display: flex; /* Use flex layout for each game */
+    flex-direction: column; /* Arrange game content vertically */
+    align-items: center; /* Center game content horizontally */
+    text-align: center; /* Center text horizontally */
+    max-width: 150px; /* Limit the maximum width of the game box */
+    padding: 5px; /* Add padding */
+    height: 175px; /* Set a fixed height for the game box */
+    overflow: hidden; /* Hide overflow content */
+}
+
+#game-image {
+    align-self: flex-start; /* Align the image to the top within the flex container */
+    width: 70px; /* Adjust width as needed */
+    height: 100px; /* Adjust height as needed */
+}
+
+#game-title {
+    margin-top: 10px; /* Add margin between image and title */
+    font-size: 14px; /* Adjust font size as needed */
+}
+
+
+.bottom-half {
+    background-color: #ffffff;
+    height: 70vh; 
+}
