@@ -10,7 +10,7 @@ body {
 .user-name {
     margin: auto;
     color: black; /* User page text color */
-    margin-bottom: 5pxx;
+    padding: 10px;
 }
 .game-row{
     display: flex;
@@ -57,5 +57,5 @@ body {
 
 .bottom-half {
     background-color: #ffffff;
-    height: 70vh; 
+    height: 75vh; 
 }

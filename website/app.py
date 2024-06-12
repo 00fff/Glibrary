@@ -8,7 +8,7 @@ from .apps.data import data_views  # Import data views from your data module
 from .database import db  # Import db from your database module
 from flask_login import LoginManager, UserMixin  # Import Flask-Login for user session management
 from datetime import timedelta  # Import timedelta for setting session lifetime
-from website.apps.share_models import Game, User  # Import shared models (Game and User) from your models module
+from website.apps.share_models import Game, User, UserGame # Import shared models (Game and User) from your models module
 from website.apps.cache_config import cache
 from flask_mail import Mail, Message
 import os 
