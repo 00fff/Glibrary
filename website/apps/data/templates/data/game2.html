@@ -8,15 +8,28 @@
     <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
     <h1>{{ game.title }}</h1>
     <img src="{{ game.art }}" alt="{{ game.title }}" width="240" height="360" id="game_art">
+
     {% if existing_association %}
-    <p>Game Completion: 
-        <form method="post" action="{{ url_for('data.game') }}">
-            <input type="checkbox" name="game_completion" id="game_completion" value="True">
-            <label for="game_completion">Mark as Completed</label>
-            <button type="submit">Submit</button> <!-- Submit button -->
-        </form>
+    {% if boolean_value %}
+    <p>Game Completed</p>
     {% else %}
+    <p>Game UnCompleted</p>
     {% endif %}
+    <form method="post" action="{{ url_for('auth.user') }}">
+        <input type="checkbox" name="game_completion" id="game_completion" value="True" {% if boolean_value %}checked{% endif %}>
+        <input type="hidden" name="game_boolean" value="{{ game.title }}">
+        <label for="game_completion">
+            {% if boolean_value %}
+                <p>True</p>
+            {% else %}
+                <p>False</p>
+            {% endif %}
+        </label>
+        <button type="submit">Submit</button>
+    </form>
+
+{% endif %}
+
     <br />
     <!-- Display platform logos based on game.platform -->
     {% for platform in game.platform.split(', ') %}

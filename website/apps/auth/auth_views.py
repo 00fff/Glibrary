@@ -124,6 +124,32 @@ def user():
                 flash("Game not in library")
         else:
             flash("Game to remove not found")
+        
+        
+
+# Ensure game_completion is interpreted as boolean True or False
+        game_completion = request.form.get("game_completion")
+        if game_completion == "True":
+            game_completion = True
+        else:
+            game_completion = False
+
+        game_title = request.form.get("game_boolean")
+        game = Game.query.filter_by(title=game_title).first()
+
+        if game:
+            boolean_association = UserGame.query.filter_by(user=user, game=game).first()
+            
+            if boolean_association:
+                # Update completion status based on the checkbox value
+                boolean_association.completion = game_completion
+                db.session.commit()
+                flash("Game completion status updated.")
+            else:
+                flash("Game not found in user library.")
+        else:
+            flash("Could Not Find Game")
+
 
     # Refetch the user's games from the database
     user_owned_games = UserGame.query.filter_by(user=user).all()
