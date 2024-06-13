@@ -110,7 +110,6 @@ def user():
                 flash("Game Added Successfully")
         else:
             flash("Game not found")
-
         # Handle removing a game
         remove_game_title = request.form.get("game_remove")
         remove_game = Game.query.filter_by(title=remove_game_title).first()

@@ -46,5 +46,7 @@ def game():
         user = User.query.filter_by(username=user).first()
         existing_association = UserGame.query.filter_by(user_id=user.user_id, game_id=game.game_id).first()
         user_owned_games = user.owned_games
-
+        if request.method == 'POST':
+            completion = request.form.get("game_completion")
+            print(completion)
     return render_template('game2.html', game=game, user=user, existing_association=existing_association, user_owned_games=user_owned_games)

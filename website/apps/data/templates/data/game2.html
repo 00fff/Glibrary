@@ -8,7 +8,16 @@
     <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet" type="text/css">
     <h1>{{ game.title }}</h1>
     <img src="{{ game.art }}" alt="{{ game.title }}" width="240" height="360" id="game_art">
-
+    {% if existing_association %}
+    <p>Game Completion: 
+        <form method="post" action="{{ url_for('data.game') }}">
+            <input type="checkbox" name="game_completion" id="game_completion" value="True">
+            <label for="game_completion">Mark as Completed</label>
+            <button type="submit">Submit</button> <!-- Submit button -->
+        </form>
+    {% else %}
+    {% endif %}
+    <br />
     <!-- Display platform logos based on game.platform -->
     {% for platform in game.platform.split(', ') %}
         {% if platform.strip() == "Linux" %}
@@ -25,7 +34,6 @@
             <img src="https://cdn.icon-icons.com/icons2/2648/PNG/512/logo_nintendo_switch_icon_160744.png" alt="Nintendo Switch">
         {% endif %}
     {% endfor %}
-
     <!-- Display PlayStation Vita if it's in platforms -->
     {% if "PlayStation Vita" in game.platform.split(', ') %}
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/PlayStation_logo.svg/2560px-PlayStation_logo.svg.png" width="290" height="250" alt="PlayStation Vita">
