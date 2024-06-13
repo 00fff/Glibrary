@@ -60,3 +60,8 @@ class UserGame(db.Model):
     
     user = db.relationship('User', back_populates='owned_games')  # Relationship back to User, linking to owned_games in User
     game = db.relationship('Game', back_populates='owners')  # Relationship back to Game, linking to owners in Game
+
+    def __init__(self, user, game):
+        self.user = user
+        self.game = game
+        

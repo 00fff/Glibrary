@@ -9,7 +9,7 @@ if __name__ == "__main__":
         all_users = User.query.all()
         for user in all_users:
             if user.owned_games:
-                first_game_title = user.owned_games[0].title
+                first_game_title = user.owned_games[0].game.title
             else:
                 first_game_title = "No games owned"
             print(f"User ID: {user.user_id}, Username: {user.username}, Email: {user.email}, First Game: {first_game_title}")

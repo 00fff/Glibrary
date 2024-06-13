@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
-from website.apps.share_models import User, Game
+from website.apps.share_models import User, Game, UserGame
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash
 from website.database import db
@@ -31,6 +31,7 @@ def welcome_email(username, sender, recipients):
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
+        email = email.lower()
         password = request.form.get('password')
         existing_user = User.query.filter_by(email=email).first()
         
@@ -92,18 +93,20 @@ def user():
     username = session.get('username')
     user = User.query.filter_by(username=username).first()
     email = session.get('email').lower()  # Convert session email to lowercase
-    
+
     if request.method == 'POST':
         # Handle adding a game
         game_title = request.form.get("game_name")
         game = Game.query.filter_by(title=game_title).first()
         
         if game is not None:  # Ensure the game exists
-            if game in user.owned_games:
+            check_game = UserGame.query.filter_by(user=user, game=game).first()
+            if check_game:
                 flash("Game Already in Game Library")
             else:
-                user.owned_games.append(game)
-                db.session.commit()
+                new_game = UserGame(user=user, game=game)  # Create UserGame object with instances
+                db.session.add(new_game)  # Add new_game to the session
+                db.session.commit()  # Commit the session to insert the new record into the database
                 flash("Game Added Successfully")
         else:
             flash("Game not found")
@@ -113,16 +116,21 @@ def user():
         remove_game = Game.query.filter_by(title=remove_game_title).first()
         
         if remove_game is not None:  # Ensure the game exists
-            if remove_game in user.owned_games:
-                user.owned_games.remove(remove_game)
-                db.session.commit()
-                flash("Game Removed Successfully")
+            existing_association = UserGame.query.filter_by(user=user, game=remove_game).first()
+            if existing_association:
+                db.session.delete(existing_association)  # Delete the existing association from the session
+                db.session.commit()  # Commit the session to delete the record from the database
+                flash("Game removed from your library.")
             else:
                 flash("Game not in library")
         else:
             flash("Game to remove not found")
 
-    return render_template('user.html', username=username, email=email, user=user)
+    # Refetch the user's games from the database
+    user_owned_games = UserGame.query.filter_by(user=user).all()
+    
+    return render_template('user.html', username=username, email=email, user=user, user_owned_games=user_owned_games)
+
 
 
 @auth.route('/edit', methods=["POST", "GET"])

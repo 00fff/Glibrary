@@ -17,20 +17,25 @@ depends_on = None
 
 
 def upgrade():
-    # Add the new column without NOT NULL constraint
-    with op.batch_alter_table('user', schema=None) as batch_op:
-        batch_op.add_column(sa.Column('description', sa.String(length=150), nullable=True))
-
-    # Populate the new column with default values
-    op.execute("UPDATE user SET description='' WHERE description IS NULL")
-
-    # Add NOT NULL constraint
-    with op.batch_alter_table('user', schema=None) as batch_op:
-        batch_op.alter_column('description', nullable=False)
-
+    # Check if 'game' table exists before trying to create it
+    conn = op.get_bind()
+    if not conn.dialect.has_table(conn, 'game'):
+        op.create_table('game',
+            sa.Column('game_id', sa.Integer(), nullable=False),
+            sa.Column('title', sa.String(length=150), nullable=False),
+            sa.Column('description', sa.String(length=150), nullable=False),
+            sa.Column('art', sa.String(length=150), nullable=False),
+            sa.Column('platform', sa.String(length=50), nullable=False),
+            sa.Column('genre', sa.String(length=50), nullable=False),
+            sa.Column('release_date', sa.Date()),
+            sa.Column('developer', sa.String(length=100)),
+            sa.Column('publisher', sa.String(length=100)),
+            sa.Column('rating', sa.String(length=10)),
+            sa.PrimaryKeyConstraint('game_id'),
+            sa.UniqueConstraint('title')
+        )
 
 def downgrade():
-    with op.batch_alter_table('user', schema=None) as batch_op:
-        batch_op.drop_column('description')
+    op.drop_table('game')
 
     # ### end Alembic commands ###
