@@ -126,7 +126,7 @@ def user():
             flash("Game to remove not found")
         
         
-
+        
 # Ensure game_completion is interpreted as boolean True or False
         game_completion = request.form.get("game_completion")
         if game_completion == "True":

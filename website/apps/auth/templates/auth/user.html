@@ -21,7 +21,21 @@ My Page
 {% endwith %}
 
 <div class="bottom-half">
-    <p class="user-name">{{ user.username }} - <a href="{{ url_for('auth.edit') }}">Edit Page</a></p>
+
+
+    
+    {% set completed_games = 0 %}
+    {% for game in user_owned_games %}
+        {{ game.completion }}
+        {% if game.completion %}
+            {% set completed_games = completed_games + 1 %}
+        {% endif %}
+    {% endfor %}
+
+<p>Number of completed games: {{ completed_games }}</p>
+
+    <p class="user-name">{{ user.username }} - Number of completed games: {{ completed_games }} / {{ user_owned_games|length }} - <a href="{{ url_for('auth.edit') }}">Edit Page</a></p>
+    
     <div class="games-box">
 
         {% for user_game in user_owned_games %}
