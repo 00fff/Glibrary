@@ -77,7 +77,7 @@ def get_game(query):
         processed_games = []
         for game_data in game_info:
             title = game_data.get('name')
-            summary = game_data.get('summary')
+            summary = game_data.get('summary') if game_data.get('summary') else "No game description"
             platforms = game_data.get('platforms', [])
             platform_names = []
             for pid in platforms:

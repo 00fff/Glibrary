@@ -14,6 +14,7 @@ CLIENT_SECRET = 'raegpu6z9tovkh7j92mch8mk7uf31t'
 def search():
     if request.method == "POST":
         query = request.form.get('query')
+        query = query.lower()
         existing_game = Game.query.filter_by(title=query).first()
         if existing_game:
             game_info = {
