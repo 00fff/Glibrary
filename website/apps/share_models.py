@@ -1,44 +1,59 @@
 # models.py
+
 from website.database import db
 from datetime import datetime
 
 class User(db.Model):
-    __tablename__ = 'user'  # Explicitly set the table name to 'user'
+    __tablename__ = 'user'
     
-    user_id = db.Column(db.Integer, primary_key=True)  # Primary key for the user
-    username = db.Column(db.String(150), unique=True, nullable=False)  # Unique username, cannot be null
-    email = db.Column(db.String(150), unique=True, nullable=False)  # Unique email, cannot be null
-    password = db.Column(db.String(150), nullable=False)  # Password, cannot be null
-    description = db.Column(db.String(150), nullable=False, default='')  # Description with a default empty string
+    user_id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
+    description = db.Column(db.String(150), nullable=False, default='')
     
-    # Use UserGame for the relationship to include the completion status
-    owned_games = db.relationship('UserGame', back_populates='user')  # Relationship to UserGame, back_populates links to UserGame.user
+    owned_games = db.relationship('UserGame', back_populates='user')
+    friendships = db.relationship('FriendModel', foreign_keys='FriendModel.user_id', backref=db.backref('friendships'), cascade='all, delete-orphan')
+    user_friends = db.relationship('FriendModel', foreign_keys='FriendModel.friend_id', backref=db.backref('user_friendships'), cascade='all, delete-orphan')
 
-    def __init__(self, username, email, password, description):
+    def __init__(self, username, email, password, description=''):
         self.username = username
         self.email = email
         self.password = password
-        self.description = description 
+        self.description = description
+
+
+
+class FriendModel(db.Model):
+    __tablename__ = 'user_to_user_association'
     
-    def get_id(self):
-        return str(self.user_id)  # Return user_id as a string
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
+    friend_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
+    
+    user = db.relationship('User', foreign_keys=[user_id], backref='user')
+    friend = db.relationship('User', foreign_keys=[friend_id], backref='friend')
+
+    def __init__(self, user_id, friend_id):
+        self.user_id = user_id
+        self.friend_id = friend_id
+
+
 
 class Game(db.Model):
-    __tablename__ = 'game'  # Explicitly set the table name to 'game'
+    __tablename__ = 'game'
     
-    game_id = db.Column(db.Integer, primary_key=True)  # Primary key for the game
-    title = db.Column(db.String(150), unique=True, nullable=False)  # Unique title, cannot be null
-    description = db.Column(db.String(150), nullable=False)  # Description, cannot be null
-    art = db.Column(db.String(150), nullable=False)  # Art URL or path, cannot be null
-    platform = db.Column(db.String(50), nullable=False)  # Platform, cannot be null
-    genre = db.Column(db.String(50), nullable=False)  # Genre, cannot be null
-    release_date = db.Column(db.Date)  # Release date, optional
-    developer = db.Column(db.String(100))  # Developer, optional
-    publisher = db.Column(db.String(100))  # Publisher, optional
-    rating = db.Column(db.String(10))  # Rating, optional
+    game_id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(150), unique=True, nullable=False)
+    description = db.Column(db.String(150), nullable=False)
+    art = db.Column(db.String(150), nullable=False)
+    platform = db.Column(db.String(50), nullable=False)
+    genre = db.Column(db.String(50), nullable=False)
+    release_date = db.Column(db.Date)
+    developer = db.Column(db.String(100))
+    publisher = db.Column(db.String(100))
+    rating = db.Column(db.String(10))
     
-    # Use UserGame for the relationship to include the completion status
-    owners = db.relationship('UserGame', back_populates='game')  # Relationship to UserGame, back_populates links to UserGame.game
+    owners = db.relationship('UserGame', back_populates='game')
 
     def __init__(self, title, description, art, platform, genre, release_date=None, developer=None, publisher=None, rating=None):
         self.title = title
@@ -50,6 +65,7 @@ class Game(db.Model):
         self.developer = developer
         self.publisher = publisher
         self.rating = rating
+
 
 class UserGame(db.Model):
     __tablename__ = 'user_game_association'  # Explicitly set the table name to 'user_game_association'
@@ -64,4 +80,3 @@ class UserGame(db.Model):
     def __init__(self, user, game):
         self.user = user
         self.game = game
-        

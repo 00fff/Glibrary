@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Game Library{% endblock title %}
+
+{% block content %}
+<form action="{{ url_for('auth.friends') }}" method="POST">
+    <label for="user">Username:</label><br>
+    <input type="text" id="user" name="user" value="user"><br>
+    <label for="friend">Friend:</label><br>
+    <input type="text" id="friend" name="friend" value="friend"><br><br>
+    <input type="submit" value="Submit">
+</form>
+<h3>Your Friends: {{ current_user.username }}</h3>
+{% if current_user.friendships  %}
+    <ul>
+        {% for friendship in current_user.friendships  %}
+            
+            <p>{{ friendship.friend.username }}</p>
+        {% endfor %}
+{% endif %}
+{% if current_user.user_friends %}
+    {% for friendship in current_user.user_friends %}
+        <p>{{ friendship.user.username }}</p>
+    {% endfor %}
+{% endif %}
+    </ul>
+
+{% endblock content %}

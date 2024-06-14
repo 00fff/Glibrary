@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
-from website.apps.share_models import User, Game, UserGame
+from website.apps.share_models import User, Game, UserGame, FriendModel
 from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash
 from website.database import db
@@ -213,3 +213,21 @@ def edit():
         return redirect(url_for('auth.user'))
 
     return render_template('edit_home.html', user=existing_user)
+
+@auth.route('/friends', methods=["POST", "GET"])
+def friends():
+    if 'username' not in session:
+        flash("Please log in first.", "danger")
+        return redirect(url_for('auth.login'))
+    current_user = User.query.filter_by(username=session['username']).first()
+    if request.method == "POST":
+        user = request.form.get('user')
+        user = User.query.filter_by(username=user).first()
+        friend = request.form.get('friend')
+        friend = User.query.filter_by(username=friend).first()
+        if user and friend:
+            new_friendship = FriendModel(user.user_id, friend.user_id)
+            db.session.add(new_friendship)
+            db.session.commit()
+        return render_template('friends.html', current_user=user)
+    return render_template('friends.html', current_user=current_user)
