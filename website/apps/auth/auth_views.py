@@ -93,7 +93,6 @@ def user():
     username = session.get('username')
     user = User.query.filter_by(username=username).first()
     email = session.get('email').lower()  # Convert session email to lowercase
-
     if request.method == 'POST':
         # Handle adding a game
         game_title = request.form.get("game_name")
@@ -153,8 +152,15 @@ def user():
 
     # Refetch the user's games from the database
     user_owned_games = UserGame.query.filter_by(user=user).all()
-    
-    return render_template('user.html', username=username, email=email, user=user, user_owned_games=user_owned_games)
+    completed_games = []
+    if user_owned_games is not None:
+        for game in user_owned_games:
+            if game.completion:
+                completed_games.append(game)
+        completed_games_count = len(completed_games)
+
+
+    return render_template('user.html', username=username, email=email, user=user, user_owned_games=user_owned_games, completed_games_count=completed_games_count)
 
 
 
