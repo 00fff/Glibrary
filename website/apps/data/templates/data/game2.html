@@ -15,7 +15,7 @@
     {% else %}
     <p>Game UnCompleted</p>
     {% endif %}
-    <form method="post" action="{{ url_for('auth.user') }}">
+    <form method="post" action="{{ url_for('auth.user', username = session.username) }}">
         <input type="checkbox" name="game_completion" id="game_completion" value="True" {% if boolean_value %}checked{% endif %}>
         <input type="hidden" name="game_boolean" value="{{ game.title }}">
         <label for="game_completion">
@@ -60,12 +60,12 @@
 
     <!-- Display Add or Remove game button based on ownership -->
     {% if existing_association %}
-        <form method="POST" action="{{ url_for('auth.user') }}">
+        <form method="POST" action="{{ url_for('auth.user', username = session.username) }}">
             <input type="hidden" name="game_remove" value="{{ game.title }}">
             <button type="submit">Remove game</button>
         </form>
     {% else %}
-        <form method="POST" action="{{ url_for('auth.user') }}">
+        <form method="POST" action="{{ url_for('auth.user', username = session.username) }}">
             <input type="hidden" name="game_name" value="{{ game.title }}">
             <button type="submit">Add to list</button>
         </form>

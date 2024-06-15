@@ -12,7 +12,7 @@
         {% else %}
             <p>Rating: N/A</p>
         {% endif %}
-        <form method="post" action="{{ url_for('auth.user') }}">
+        <form method="post" action="{{ url_for('auth.user', username = session.username) }}">
             <input type="hidden" name="game_name" value="{{ game.name }}">
             <button type="submit" class="form-button">Add to list</button>
         </form>

@@ -39,7 +39,7 @@ def login():
             flash("Logged in", category="success")
             session['username'] = existing_user.username
             session['email'] = existing_user.email
-            return redirect(url_for('auth.user'))
+            return redirect(url_for('auth.user', username=session['username']))
         else:
             flash('Invalid email or password!', category='error')
             return redirect(url_for('auth.login'))
@@ -83,15 +83,17 @@ def sign_up():
         session['username'] = username
         session['email'] = email
         
-        return redirect(url_for('auth.user'))
+        
+        return redirect(url_for('auth.user', username=session['username']))
     
     return render_template('sign_up.html')
 
 
-@auth.route('/mypage', methods=["POST", "GET"])
-def user():
-    username = session.get('username')
+@auth.route('/<username>', methods=["POST", "GET"])
+def user(username):
+    current_user = User.query.filter_by(username=session['username']).first()
     user = User.query.filter_by(username=username).first()
+
     email = session.get('email').lower()  # Convert session email to lowercase
     if request.method == 'POST':
         # Handle adding a game
@@ -160,7 +162,7 @@ def user():
         completed_games_count = len(completed_games)
 
 
-    return render_template('user.html', username=username, email=email, user=user, user_owned_games=user_owned_games, completed_games_count=completed_games_count)
+    return render_template('user.html', username=username, email=email, user=user, user_owned_games=user_owned_games, completed_games_count=completed_games_count, current_user=current_user)
 
 
 
@@ -210,7 +212,7 @@ def edit():
 
         db.session.commit()
         flash('Profile updated successfully!', category='success')
-        return redirect(url_for('auth.user'))
+        return redirect(url_for('auth.user', username=session['username']))
 
     return render_template('edit_home.html', user=existing_user)
 

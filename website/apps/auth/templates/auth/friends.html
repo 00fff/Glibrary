@@ -13,13 +13,12 @@
 {% if current_user.friendships  %}
     <ul>
         {% for friendship in current_user.friendships  %}
-            
-            <p>{{ friendship.friend.username }}</p>
+        <p>{{ friendship.friend.username }} - <a href="http://127.0.0.1:5000/auth/{{ friendship.friend.username }}">Visit Friends Page?</a></p>
         {% endfor %}
 {% endif %}
 {% if current_user.user_friends %}
     {% for friendship in current_user.user_friends %}
-        <p>{{ friendship.user.username }}</p>
+        <p>{{ friendship.user.username }} - <a href="http://127.0.0.1:5000/auth/{{ friendship.user.username }}">Visit Friends Page?</a></p></p>
     {% endfor %}
 {% endif %}
     </ul>
