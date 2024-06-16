@@ -24,10 +24,15 @@ My Page
 
     <p class="user-name">{{ user.username }} - Number of completed games: {{ completed_games_count }} / {{ user_owned_games|length }} 
         {% if user == current_user %}
+        
             <a href="{{ url_for('auth.edit') }}">Edit Page</a></p>
         {% else %}
         {% endif %}
-    
+        <form action="{{ url_for('auth.friends') }}" method="GET">
+            <button type="submit">
+                <input type="hidden" name="" value="">
+            </button>
+            </form>
     <div class="games-box">
 
         {% for user_game in user_owned_games %}
