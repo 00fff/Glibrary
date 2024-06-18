@@ -223,16 +223,21 @@ def friends():
         return redirect(url_for('auth.login'))
     current_user = User.query.filter_by(username=session['username']).first()
     user_id = current_user.user_id
-    if request.method == "POST":
+    if request.method == "GET":
         current_user = User.query.filter_by(username=session['username']).first()
-        
-        friend_name = request.form.get('added_user_name')
-        print(user_id)
+        friend_name = request.args.get('added_user_name')
         friend = User.query.filter_by(username=friend_name).first()
-        friendship = FriendModel.query.filter_by()
-        if user and friend:
-            new_friendship = FriendModel(user.user_id, friend.user_id)
+        cuser_id = current_user.user_id
+        friend_id = friend.user_id
+        print(cuser_id, friend_id)
+        check_friendship = FriendModel.query.filter_by(user_id=cuser_id, friend_id=friend_id).first()
+        
+        if check_friendship:
+            flash("User Already In Your Friend's List")
+            return render_template('friends.html', current_user=user)
+        else:
+            new_friendship = FriendModel(user_id=cuser_id, friend_id=friend_id)
             db.session.add(new_friendship)
             db.session.commit()
         return render_template('friends.html', current_user=user)
-    return render_template('friends.html', current_user=current_user)
+    return render_template('friends.html', current_user=user)

@@ -28,10 +28,13 @@ My Page
             <a href="{{ url_for('auth.edit') }}">Edit Page</a></p>
         {% else %}
         {% endif %}
+        {% if user == current_user %}
+        {% else %}
         <form action="{{ url_for('auth.friends') }}" method="GET">
             <button type="submit">Add friend</button>
                 <input type="hidden" name="added_user_name" value="{{ user.username }}">
             </form>
+        {% endif %}
     <div class="games-box">
 
         {% for user_game in user_owned_games %}
