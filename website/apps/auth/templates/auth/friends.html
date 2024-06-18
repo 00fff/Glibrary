@@ -1,27 +1,34 @@
 {% extends "base.html" %}
-{% block title %}Game Library{% endblock title %}
-
+{% block title %}Friends{% endblock title %}
+<title>Friends</title>
 {% block content %}
-<form action="{{ url_for('auth.friends') }}" method="POST">
-    <label for="user">Username:</label><br>
-    <input type="text" id="user" name="user" value="user"><br>
-    <label for="friend">Friend:</label><br>
-    <input type="text" id="friend" name="friend" value="friend"><br><br>
-    <input type="submit" value="Submit">
-</form>
-<h3>Your Friends: {{ current_user.username }}</h3>
-{% if current_user.friendships  %}
+
+{% if current_user %}
+    <p>Friends List: </p>
+{% else %}
+    <p>Current user is not defined.</p>
+{% endif %}
+
+{% if current_user.friendships %}
     <ul>
-        {% for friendship in current_user.friendships  %}
-        <p>{{ friendship.friend.username }} - <a href="http://127.0.0.1:5000/auth/{{ friendship.friend.username }}">Visit Friends Page?</a></p>
+        {% for friendship in current_user.friendships %}
+            <li>
+                <p>{{ friendship.friend.username }} - <a href="{{ url_for('auth.user', username=friendship.friend.username) }}">Visit Friends Page?</a></p>
+            </li>
         {% endfor %}
-{% endif %}
-{% if current_user.user_friends %}
-    {% for friendship in current_user.user_friends %}
-        <p>{{ friendship.user.username }} - <a href="http://127.0.0.1:5000/auth/{{ friendship.user.username }}">Visit Friends Page?</a></p></p>
-    {% endfor %}
-{% endif %}
     </ul>
+{% endif %}
+
+{% if current_user.user_friends %}
+    <ul>
+        {% for friendship in current_user.user_friends %}
+            <li>
+                <p>{{ friendship.user.username }} - <a href="{{ url_for('auth.user', username=friendship.user.username) }}">Visit Friends Page?</a></p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
 {% with messages = get_flashed_messages() %}
     {% if messages %}
         {% for message in messages %}
@@ -29,4 +36,5 @@
         {% endfor %}
     {% endif %}
 {% endwith %}
+
 {% endblock content %}

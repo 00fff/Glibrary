@@ -221,18 +221,22 @@ def friends():
     if 'username' not in session:
         flash("Please log in first.", "danger")
         return redirect(url_for('auth.login'))
+
     current_user = User.query.filter_by(username=session['username']).first()
-    user_id = current_user.user_id
-    if request.method == "GET":
-        current_user = User.query.filter_by(username=session['username']).first()
-        friend_name = request.args.get('added_user_name')
+    
+    if current_user is None:
+        flash("User not found.", "danger")
+        return redirect(url_for('auth.login'))
+    
+    if request.method == "POST":
+        friend_name = request.form.get('added_user_name')
         friend = User.query.filter_by(username=friend_name).first()
         cuser_id = current_user.user_id
         friend_id = friend.user_id
         print(cuser_id, friend_id)
         check_friendship = FriendModel.query.filter_by(user_id=cuser_id, friend_id=friend_id).first()
-        
-        if check_friendship:
+        check_friendship2 =FriendModel.query.filter_by(user_id=friend_id, friend_id=cuser_id).first()
+        if check_friendship or check_friendship2:
             flash("User Already In Your Friend's List")
             return render_template('friends.html', current_user=user)
         else:
@@ -240,4 +244,8 @@ def friends():
             db.session.add(new_friendship)
             db.session.commit()
         return render_template('friends.html', current_user=user)
-    return render_template('friends.html', current_user=user)
+    return render_template('friends.html', current_user=current_user)
+
+@auth.route('/notification', methods=["POST", "GET"])
+def notification():
+    return render_template('notification.html', current_user=user)
