@@ -222,11 +222,14 @@ def friends():
         flash("Please log in first.", "danger")
         return redirect(url_for('auth.login'))
     current_user = User.query.filter_by(username=session['username']).first()
+    user_id = current_user.user_id
     if request.method == "POST":
-        user = request.form.get('user')
-        user = User.query.filter_by(username=user).first()
-        friend = request.form.get('friend')
-        friend = User.query.filter_by(username=friend).first()
+        current_user = User.query.filter_by(username=session['username']).first()
+        
+        friend_name = request.form.get('added_user_name')
+        print(user_id)
+        friend = User.query.filter_by(username=friend_name).first()
+        friendship = FriendModel.query.filter_by()
         if user and friend:
             new_friendship = FriendModel(user.user_id, friend.user_id)
             db.session.add(new_friendship)
