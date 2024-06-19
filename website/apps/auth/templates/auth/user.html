@@ -23,16 +23,20 @@ My Page
 <div class="bottom-half">
 
     <p class="user-name">{{ user.username }} - Number of completed games: {{ completed_games_count }} / {{ user_owned_games|length }} 
-        {% if user == current_user %}
-    {% if current_user.user_friends %}
-        <p>{{ user.username }} is in your friend list</p>
+    {% if user != current_user %}
+    {% if user in current_user.friends or current_user.friendships and user != current_user %}
+    <form action="{{ url_for('auth.friends') }}" id="fbutton" method="POST">
+        <button type="submit">Remove friend</button>
+        <input type="hidden" name="remove_user_name" value="{{ user.username }}">
+    </form>
     {% else %}
-        <form action="{{ url_for('auth.friends') }}" method="POST">
-            <button type="submit">Add friend</button>
-            <input type="hidden" name="added_user_name" value="{{ user.username }}">
-        </form>
+    <form action="{{ url_for('auth.friends') }}" id="fbutton" method="POST">
+        <button type="submit">Add friend</button>
+        <input type="hidden" name="added_user_name" value="{{ user.username }}">
+    </form>
     {% endif %}
-{% endif %}
+    {% endif %}
+
     <div class="games-box">
 
         {% for user_game in user_owned_games %}

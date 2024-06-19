@@ -229,21 +229,37 @@ def friends():
         return redirect(url_for('auth.login'))
     
     if request.method == "POST":
+        #adding friend
+        remove_friend = request.form.get('remove_user_name')
         friend_name = request.form.get('added_user_name')
-        friend = User.query.filter_by(username=friend_name).first()
-        cuser_id = current_user.user_id
-        friend_id = friend.user_id
-        print(cuser_id, friend_id)
-        check_friendship = FriendModel.query.filter_by(user_id=cuser_id, friend_id=friend_id).first()
-        check_friendship2 =FriendModel.query.filter_by(user_id=friend_id, friend_id=cuser_id).first()
-        if check_friendship or check_friendship2:
-            flash("User Already In Your Friend's List")
+        if friend_name:
+            friend = User.query.filter_by(username=friend_name).first()
+            cuser_id = current_user.user_id
+            friend_id = friend.user_id
+            print(cuser_id, friend_id)
+            check_friendship = FriendModel.query.filter_by(user_id=cuser_id, friend_id=friend_id).first()
+            check_friendship2 =FriendModel.query.filter_by(user_id=friend_id, friend_id=cuser_id).first()
+            if check_friendship or check_friendship2:
+                flash("User Already In Your Friend's List")
+                return render_template('friends.html', current_user=user)
+            else:
+                new_friendship = FriendModel(user_id=cuser_id, friend_id=friend_id)
+                db.session.add(new_friendship)
+                db.session.commit()
             return render_template('friends.html', current_user=user)
-        else:
-            new_friendship = FriendModel(user_id=cuser_id, friend_id=friend_id)
-            db.session.add(new_friendship)
-            db.session.commit()
-        return render_template('friends.html', current_user=user)
+        if remove_friend:
+            remove_friend = User.query.filter_by(username=remove_friend).first()
+            cuser_id = current_user.user_id
+            friend_id = remove_friend.user_id
+            remove_friendship = FriendModel.query.filter_by(user_id=cuser_id, friend_id=friend_id).first()
+            remove_friendship2 =FriendModel.query.filter_by(user_id=friend_id, friend_id=cuser_id).first()
+            if remove_friendship:
+                db.session.delete(remove_friendship)
+                db.session.commit()
+            elif remove_friendship2:
+                db.session.delete(remove_friendship2)
+                db.session.commit()
+            return render_template('friends.html', current_user=current_user)
     return render_template('friends.html', current_user=current_user)
 
 @auth.route('/notification', methods=["POST", "GET"])
