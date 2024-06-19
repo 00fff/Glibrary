@@ -241,12 +241,12 @@ def friends():
             check_friendship2 =FriendModel.query.filter_by(user_id=friend_id, friend_id=cuser_id).first()
             if check_friendship or check_friendship2:
                 flash("User Already In Your Friend's List")
-                return render_template('friends.html', current_user=user)
+                return render_template('friends.html', current_user=current_user)
             else:
                 new_friendship = FriendModel(user_id=cuser_id, friend_id=friend_id)
                 db.session.add(new_friendship)
                 db.session.commit()
-            return render_template('friends.html', current_user=user)
+            return render_template('friends.html', current_user=current_user)
         if remove_friend:
             remove_friend = User.query.filter_by(username=remove_friend).first()
             cuser_id = current_user.user_id
@@ -265,3 +265,23 @@ def friends():
 @auth.route('/notification', methods=["POST", "GET"])
 def notification():
     return render_template('notification.html', current_user=user)
+
+@auth.route('/friend-search', methods=["POST", "GET"])
+def friend_search():
+    if 'username' not in session:
+        flash("Please log in first.", "danger")
+        return redirect(url_for('auth.login'))
+
+    current_user = User.query.filter_by(username=session['username']).first()
+    found_names = None
+
+    if request.method == "POST":
+        query = request.form.get('query')
+        if query:
+            found_names = User.query.filter(User.username.contains(query)).all()
+            if not found_names:
+                flash("No users found.", "warning")
+        else:
+            flash("Please enter a search term.", "warning")
+
+    return render_template('friendsearch.html', current_user=current_user, found_names=found_names)

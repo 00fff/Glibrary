@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Friend Search{% endblock title %}
+
+{% block content %}
+<h2>Search Results for "{{ request.form.query }}"</h2>
+
+{% if found_names %}
+    <ul>
+    {% for user in found_names %}
+        <li>{{ user.username }} - <a href="{{ url_for('auth.user', username=user.username) }}">Visit Profile</a></li>
+    {% endfor %}
+    </ul>
+{% elif found_names is not none %}
+    <p>No users found.</p>
+{% endif %}
+{% endblock content %}
