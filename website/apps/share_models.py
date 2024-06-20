@@ -11,16 +11,18 @@ class User(db.Model):
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
     description = db.Column(db.String(150), nullable=False, default='')
+    profile_image = db.Column(db.String(150), nullable=True) 
     
-    owned_games = db.relationship('UserGame', back_populates='user')
+    owned_games = db.relationship('UserGame', back_populates='user', cascade='all, delete-orphan')
     friendships = db.relationship('FriendModel', foreign_keys='FriendModel.user_id', backref=db.backref('friendships'), cascade='all, delete-orphan')
     user_friends = db.relationship('FriendModel', foreign_keys='FriendModel.friend_id', backref=db.backref('user_friendships'), cascade='all, delete-orphan')
 
-    def __init__(self, username, email, password, description=''):
+    def __init__(self, username, email, password, description='', profile_image=None):
         self.username = username
         self.email = email
         self.password = password
         self.description = description
+        self.profile_image = profile_image  # Initialize the profile image
 
 
 

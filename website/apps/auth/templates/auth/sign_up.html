@@ -1,21 +1,18 @@
 {% extends "base.html" %}
 {% block title %}Sign Up{% endblock title %}
 {% block content %}
-<h1>sign up</h1>
-<form action="{{ url_for('auth.sign_up') }}" method="POST">
+<h1>Sign Up</h1>
+<form action="{{ url_for('auth.sign_up') }}" method="POST" enctype="multipart/form-data">
   <label for="username">Username: </label><br>
   <input type="text" id="username" name="username" value=""><br>
   <label for="password">Password:</label><br>
   <input type="password" id="password" name="password" value=""><br><br>
   <label for="email">Email: </label><br>
   <input type="email" id="email" name="email" value=""><br><br>
-  <label for="description">Tell us about your self!:</label><br>
-  <input type="description" id="description" name="description" value=""><br>
-  <label for="profile_picture">Profile Picture</label>
-        <input type="file" class="form-control-file" id="profile_picture" name="profile_picture">
-        <img src="{{ url_for('static', filename=profile_picture) }}">
-
-    </div>
+  <label for="description">Tell us about yourself:</label><br>
+  <input type="text" id="description" name="description" value=""><br><br>
+  <label for="profile_picture">Profile Picture:</label><br>
+  <input type="file" class="form-control-file" id="profile_picture" name="profile_picture"><br><br>
   <input type="submit" value="Submit">
 </form>
 {% endblock content %}

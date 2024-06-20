@@ -6,7 +6,12 @@ body {
     height: 100vh; /* Set the body height to 100% of the viewport height */
     margin: 0; /* Remove default margins */
 }
-
+#pfp{
+    border-radius: 15px; /* Set border radius for rounded corners */ /* Makes the image round */
+    width: 200px; /* Sets the width of the image */
+    border: 2px solid white; /* Adds a red border around the image */
+    
+}
 .user-name {
     margin: auto;
     color: black; /* User page text color */

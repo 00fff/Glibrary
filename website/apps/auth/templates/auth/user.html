@@ -19,10 +19,16 @@ My Page
     {% endif %}
 {% endwith %}
 
+{% if user.profile_image %}
+    <img id="pfp" src="{{ url_for('static', filename='uploads/' + user.profile_image) }}" alt="Profile Image">
+{% else %}
+    <p></p>
+{% endif %}
 <div class="bottom-half">
 
-    <p class="user-name">{{ user.username }} - Number of completed games: {{ completed_games_count }} / {{ user_owned_games|length }} 
+    <p class="user-name">{{ user.username }} - Number of completed games: {{ completed_games_count }} / {{ user_owned_games|length }}</p>
     <p id="description">{{ user.description }}</p>
+    
     {% if user != current_user %}
     {% if user in current_user.friends or current_user.friendships %}
     <form action="{{ url_for('auth.friends') }}" method="POST">

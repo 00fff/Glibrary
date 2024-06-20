@@ -8,14 +8,11 @@ from website.apps.mail import mail
 import os
 import hashlib
 
-auth = Blueprint('auth', __name__, template_folder='templates/auth')
+auth = Blueprint('auth', __name__, template_folder='templates/auth', static_folder='static')
 
-
-
-
-UPLOAD_FOLDER = 'path/to/upload/folder'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
+UPLOAD_FOLDER = os.path.join('static', 'uploads')
+MAX_CONTENT_LENGTH = 16 * 1024 * 1024
 def hash_password_sha256(password):
     return hashlib.sha256(password.encode('utf-8')).hexdigest()
 
@@ -60,29 +57,33 @@ def sign_up():
         email = request.form.get('email').lower()  # Convert email to lowercase
         password = request.form.get('password')
         description = request.form.get('description')
-        
+        pfp = request.files['profile_picture']
+        print(pfp)
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
             flash('Username already exists!', category='error')
             return redirect(url_for('auth.sign_up'))
         
-        if 'profile_picture' in request.files:
-            profile_picture = request.files['profile_picture']
-            if profile_picture.filename != '' and allowed_file(profile_picture.filename):
-                filename = secure_filename(profile_picture.filename)
-                profile_picture.save(os.path.join(UPLOAD_FOLDER, filename))
-                flash('Profile picture uploaded successfully!', category='success')
-            else:
-                flash('Invalid file format!', category='error')
+        if not os.path.exists(UPLOAD_FOLDER):
+            os.makedirs(UPLOAD_FOLDER)
+
+        if pfp and allowed_file(pfp.filename):
+            filename = secure_filename(pfp.filename)
+            unique_filename = f"{username}_{filename}"
+            save_path = os.path.join(UPLOAD_FOLDER, unique_filename)
+            print(save_path)
+            pfp.save(save_path)
+            profile_image = unique_filename
+        else:
+            profile_image = None
 
         hashed_password = hash_password_sha256(password)
-        new_user = User(username=username, email=email, password=hashed_password, description=description)
+        new_user = User(username=username, email=email, password=hashed_password, description=description, profile_image=profile_image)
         db.session.add(new_user)
         db.session.commit()
         flash('Account created successfully!', category='success')
         session['username'] = username
         session['email'] = email
-        
         
         return redirect(url_for('auth.user', username=session['username']))
     
@@ -180,6 +181,8 @@ def edit():
         new_username = request.form.get('username')
         new_email = request.form.get('email').lower()  # Convert new email to lowercase
         new_description = request.form.get('description')
+        new_pfp = request.files.get('new_profile_picture')
+        # new_pfp = request.form.get('profile_picture')
 
         # Check if the current password is correct
         if existing_user.password != hash_password_sha256(current_password):
@@ -209,6 +212,11 @@ def edit():
         if new_password:
             hashed_new_password = hash_password_sha256(new_password)
             existing_user.password = hashed_new_password
+
+        # Update username if provided
+        if new_pfp:
+            existing_user.profile_image = new_pfp
+            session['profile_image'] = new_pfp
 
         db.session.commit()
         flash('Profile updated successfully!', category='success')
@@ -264,7 +272,11 @@ def friends():
 
 @auth.route('/notification', methods=["POST", "GET"])
 def notification():
-    return render_template('notification.html', current_user=user)
+    if 'username' not in session:
+        flash("Please log in first.", "danger")
+        return redirect(url_for('auth.login'))
+    current_user = User.query.filter_by(username=session['username']).first()
+    return render_template('notification.html', current_user=current_user)
 
 @auth.route('/friend-search', methods=["POST", "GET"])
 def friend_search():
@@ -285,3 +297,15 @@ def friend_search():
             flash("Please enter a search term.", "warning")
 
     return render_template('friendsearch.html', current_user=current_user, found_names=found_names)
+
+@auth.route('/delete', methods=["POST", "GET"])
+def delete_user():
+    if 'username' not in session:
+        flash("Please log in first.", "danger")
+        return redirect(url_for('auth.login'))
+    current_user = User.query.filter_by(username=session['username']).first()
+    db.session.delete(current_user)
+    db.session.commit()
+    session.pop('username', None)
+    session.pop('email', None)
+    return render_template('delete.html')

@@ -14,16 +14,23 @@ from flask_mail import Mail, Message
 import os 
 from website.apps.mail import mail
 
+
 # Initialize the cache at the top level
 
 
 def create_app():
     app = Flask(__name__, template_folder="templates")  # Initialize Flask app with the specified templates folder
+    UPLOAD_FOLDER = os.path.join('static', 'uploads')
+    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+    app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'  # Set the database URI for SQLAlchemy (fixed typo)
+    app.config['UPLOAD_DIRECTORY'] = "uploads/"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable SQLAlchemy track modifications (recommended for performance)
     app.config['SECRET_KEY'] = 'Secret_Key'  # Set the secret key for session management and other security needs
     app.permanent_session_lifetime = timedelta(days=30)  # Set session lifetime to 30 days
     app.static_folder = 'static'  # Specify the folder for static files
+
     
     # Initialize SQLAlchemy with the Flask app
     db.init_app(app)
