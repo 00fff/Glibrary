@@ -25,13 +25,14 @@ My Page
     <p class="user-name">{{ user.username }} - Number of completed games: {{ completed_games_count }} / {{ user_owned_games|length }} 
     {% if user != current_user %}
     {% if user in current_user.friends or current_user.friendships %}
-    <form action="{{ url_for('auth.friends') }}" id="fbutton" method="POST">
-        <button type="submit">Remove friend</button>
+    <form action="{{ url_for('auth.friends') }}" method="POST">
+        <button class="aor" type="submit">Remove friend</button>
         <input type="hidden" name="remove_user_name" value="{{ user.username }}">
     </form>
+    
     {% else %}
-    <form action="{{ url_for('auth.friends') }}" id="fbutton" method="POST">
-        <button type="submit">Add friend</button>
+    <form action="{{ url_for('auth.friends') }}"  method="POST">
+        <button id="fbutton" type="submit">Add friend</button>
         <input type="hidden" name="added_user_name" value="{{ user.username }}">
     </form>
     {% endif %}

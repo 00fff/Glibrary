@@ -42,8 +42,8 @@ body {
     height: 175px; /* Set a fixed height for the game box */
     overflow: hidden; /* Hide overflow content */
 }
-#fbutton {
-    border-radius: 8px;
+.aor {
+    border-radius: 20px;
 }
 #game-image {
     align-self: flex-start; /* Align the image to the top within the flex container */
