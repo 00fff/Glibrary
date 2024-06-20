@@ -42,8 +42,25 @@ body {
     height: 175px; /* Set a fixed height for the game box */
     overflow: hidden; /* Hide overflow content */
 }
-.aor {
-    border-radius: 20px;
+#description {
+    margin: auto;
+    padding: 10px;
+}
+.addbutton {
+    margin: 5px;
+    padding: 5px;
+    border-radius: 15px;
+    background-color: #77c4a8; 
+    color: black; 
+    border: 2px solid #04AA6D;
+}
+.removebutton {
+    margin: 5px;
+    padding: 5px;
+    border-radius: 15px;
+    background-color: rgb(192, 15, 15); 
+    color: white; 
+    border: 2px solid rgb(77, 5, 5);
 }
 #game-image {
     align-self: flex-start; /* Align the image to the top within the flex container */

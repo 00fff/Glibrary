@@ -10,7 +10,6 @@ My Page
 
 {% block content %}
 <link href="{{ url_for('static', filename='user.css') }}" rel="stylesheet" type="text/css">
-<br>{{ user.description }}</br>
 
 {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -23,16 +22,17 @@ My Page
 <div class="bottom-half">
 
     <p class="user-name">{{ user.username }} - Number of completed games: {{ completed_games_count }} / {{ user_owned_games|length }} 
+    <p id="description">{{ user.description }}</p>
     {% if user != current_user %}
     {% if user in current_user.friends or current_user.friendships %}
     <form action="{{ url_for('auth.friends') }}" method="POST">
-        <button class="aor" type="submit">Remove friend</button>
+        <button class="removebutton" type="submit">Remove friend</button>
         <input type="hidden" name="remove_user_name" value="{{ user.username }}">
     </form>
     
     {% else %}
     <form action="{{ url_for('auth.friends') }}"  method="POST">
-        <button id="fbutton" type="submit">Add friend</button>
+        <button class="addbutton" type="submit">Add friend</button>
         <input type="hidden" name="added_user_name" value="{{ user.username }}">
     </form>
     {% endif %}
