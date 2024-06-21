@@ -71,7 +71,6 @@ def sign_up():
             filename = secure_filename(pfp.filename)
             unique_filename = f"{username}_{filename}"
             save_path = os.path.join(UPLOAD_FOLDER, unique_filename)
-            print(save_path)
             pfp.save(save_path)
             profile_image = unique_filename
         else:
