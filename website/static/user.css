@@ -10,6 +10,7 @@ body {
     border-radius: 15px; /* Set border radius for rounded corners */ /* Makes the image round */
     width: 200px; /* Sets the width of the image */
     border: 2px solid white; /* Adds a red border around the image */
+    margin: 10px;
     
 }
 .user-name {
@@ -81,5 +82,5 @@ body {
 
 .bottom-half {
     background-color: #ffffff;
-    height: 75vh; 
+    height: 750px; 
 }
