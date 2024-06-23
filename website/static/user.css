@@ -13,6 +13,10 @@ body {
     margin: 10px;
     
 }
+#nogame{
+    color:white;
+    font-size: medium;
+}
 .user-name {
     margin: auto;
     color: black; /* User page text color */

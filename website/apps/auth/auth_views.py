@@ -75,7 +75,7 @@ def sign_up():
             pfp.save(save_path)
             profile_image = unique_filename
         else:
-            profile_image = None
+            profile_image = "blank_pfp.png"
 
         hashed_password = hash_password_sha256(password)
         new_user = User(username=username, email=email, password=hashed_password, description=description, profile_image=profile_image)
