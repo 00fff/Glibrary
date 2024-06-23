@@ -7,7 +7,8 @@ from flask_mail import Message
 from website.apps.mail import mail
 import os
 import hashlib
-
+from website.utils.utils import send_email
+home_email = "00fffprojects@gmail.com"
 auth = Blueprint('auth', __name__, template_folder='templates/auth', static_folder='static')
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -81,6 +82,7 @@ def sign_up():
         db.session.add(new_user)
         db.session.commit()
         flash('Account created successfully!', category='success')
+        send_email("Welcome To GameLibraries!", email, "Thank you for registering an account for GameLibraries, Have fun Gaming!")
         session['username'] = username
         session['email'] = email
         
