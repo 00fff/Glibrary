@@ -2,23 +2,27 @@
 {% block title %}Edit{% endblock title %}
 {% block content %}
 <h1>Change your information Here</h1>
+<link href="{{ url_for('static', filename='user_edit.css') }}" rel="stylesheet" type="text/css">
 
 <form action="{{ url_for('auth.edit') }}" method="POST">
     <label for="username">Change Username: </label><br>
-    <input type="text" id="username" name="username" placeholder="New Username"><br>
+    <input class="input_field" type="text" id="username" name="username" placeholder="New Username"><br>
     <label for="current_password">Current Password:</label><br>
-    <input type="password" id="current_password" name="current_password" placeholder="Current Password"><br><br>
+    <input class="input_field" type="password" id="current_password" name="current_password" placeholder="Current Password"><br><br>
     <label for="new_password">New Password:</label><br>
-    <input type="password" id="new_password" name="new_password" placeholder="New Password"><br><br>
+    <input class="input_field" type="password" id="new_password" name="new_password" placeholder="New Password"><br><br>
     <label for="email">Email: </label><br>
-    <input type="email" id="email" name="email" placeholder="New Email"><br><br>
+    <input class="input_field" type="email" id="email" name="email" placeholder="New Email"><br><br>
     <label for="description">Tell us about yourself:</label><br>
-    <textarea id="description" name="description" rows="4" cols="50" placeholder="New Description"></textarea><br>
+    <textarea class="input_field" id="description" name="description" rows="4" cols="50" placeholder="New Description"></textarea><br>
     <label for="profile_picture">Profile Picture:</label><br>
   <input type="file" class="form-control-file" id="new_profile_picture" name="new_profile_picture"><br><br>
   <input type="submit" value="Submit">
 </form>
-
+<form action="{{ url_for('auth.delete_user') }}" method="POST">
+    <button class="removebutton" type="submit">Delete Account</button>
+    <input type="hidden" name="remove_user_name" value="{{ username }}">
+</form>
     {% for game in user_game_association %}
         {{ game.title }}
     {% endfor %}

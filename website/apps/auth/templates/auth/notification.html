@@ -1,8 +1,5 @@
 {% extends "base.html" %}
 {% block title %}{% endblock title %}
 {% block content %}
-<form action="{{ url_for('auth.delete_user') }}" method="POST">
-    <button class="removebutton" type="submit">Remove friend</button>
-    <input type="hidden" name="remove_user_name" value="{{ current_user.username }}">
-</form>
+
 {% endblock content %}
