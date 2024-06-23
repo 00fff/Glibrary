@@ -82,7 +82,8 @@ def sign_up():
         db.session.add(new_user)
         db.session.commit()
         flash('Account created successfully!', category='success')
-        send_email("Welcome To GameLibraries!", email, "Thank you for registering an account for GameLibraries, Have fun Gaming!")
+        welcome_html = render_template('wemail.html', username=new_user.username)
+        send_email("Welcome To GameLibraries!", email, "Thank you for registering an account for GameLibraries, Have fun Gaming!", welcome_html)
         session['username'] = username
         session['email'] = email
         

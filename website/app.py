@@ -31,7 +31,7 @@ def create_app():
     app.config['MAIL_PASSWORD'] = 'qlacpmqtteztzmib'
     app.config['MAIL_USE_TLS'] = False
     app.config['MAIL_USE_SSL'] = True
-    app.config['MAIL_DEBUG'] = True
+    app.config['MAIL_DEBUG'] = False
     app.permanent_session_lifetime = timedelta(days=30)
     app.static_folder = 'static'
 
