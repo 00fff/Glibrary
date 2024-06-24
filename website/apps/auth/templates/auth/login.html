@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ username }}{% endblock title %}
+{% block title %}Login{% endblock title %}
 {% block content %}
 <h1>Log In</h1>
 <form action="{{ url_for('auth.login') }}" method="POST">
@@ -9,4 +9,5 @@
   <input type="password" id="password" name="password" value=""><br><br>
   <input type="submit" value="Submit">
 </form>
+<a href="{{ url_for('auth.lost_password') }}">Forgot Password?</a>
 {% endblock content %}

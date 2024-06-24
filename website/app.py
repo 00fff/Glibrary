@@ -8,14 +8,14 @@ from .apps.data import data_views
 from .database import db
 from flask_login import LoginManager, UserMixin
 from datetime import timedelta
+from dotenv import load_dotenv
 from website.apps.share_models import Game, User, UserGame
 from website.apps.cache_config import cache
 from website.mail_config import mail  # Import mail from mail_config.py
 import os
 
-ms = 'mmshposgdycaqrd'
-
 def create_app():
+    load_dotenv()  # Load environment variables from .env file
     app = Flask(__name__, template_folder="templates")
     UPLOAD_FOLDER = os.path.join('static', 'uploads')
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
@@ -24,11 +24,11 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
     app.config['UPLOAD_DIRECTORY'] = "uploads/"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SECRET_KEY'] = 'Secret_Key'
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 465
-    app.config['MAIL_USERNAME'] = 'mawt3ni@gmail.com'
-    app.config['MAIL_PASSWORD'] = 'qlacpmqtteztzmib'
+    app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
     app.config['MAIL_USE_TLS'] = False
     app.config['MAIL_USE_SSL'] = True
     app.config['MAIL_DEBUG'] = False

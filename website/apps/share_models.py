@@ -1,5 +1,5 @@
 # models.py
-
+from itsdangerous import URLSafeTimedSerializer as Serializer
 from website.database import db
 from datetime import datetime
 

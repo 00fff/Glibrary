@@ -311,3 +311,15 @@ def delete_user():
     session.pop('username', None)
     session.pop('email', None)
     return render_template('delete.html')
+
+@auth.route('/lost_password', methods=["POST", "GET"])
+def lost_password():
+    if request.method == "POST":
+        email = request.form.get("email")
+        user_query = User.query.filter_by(email=email).first()
+        if user_query:
+            chpass = render_template('chpass.html', username=user_query.username)
+            send_email("Forgot Password?", email, "Click the link to change your password!", chpass)
+            
+        return render_template('lostpass.html')
+    return render_template('lostpass.html')
