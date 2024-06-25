@@ -60,7 +60,7 @@ def sign_up():
         password = request.form.get('password')
         description = request.form.get('description')
         pfp = request.files['profile_picture']
-        print(pfp)
+        
         existing_user = User.query.filter_by(username=username).first()
         if existing_user:
             flash('Username already exists!', category='error')
@@ -240,39 +240,49 @@ def friends():
         return redirect(url_for('auth.login'))
     
     if request.method == "POST":
-        #adding friend
         remove_friend = request.form.get('remove_user_name')
         friend_name = request.form.get('added_user_name')
+        
         if friend_name:
             friend = User.query.filter_by(username=friend_name).first()
-            cuser_id = current_user.user_id
-            friend_id = friend.user_id
-            print(cuser_id, friend_id)
-            check_friendship = FriendModel.query.filter_by(user_id=cuser_id, friend_id=friend_id).first()
-            check_friendship2 =FriendModel.query.filter_by(user_id=friend_id, friend_id=cuser_id).first()
-            if check_friendship or check_friendship2:
-                flash("User Already In Your Friend's List")
-                return render_template('friends.html', current_user=current_user)
+            if not friend:
+                flash(f"User '{friend_name}' not found.", "danger")
             else:
-                new_friendship = FriendModel(user_id=cuser_id, friend_id=friend_id)
-                db.session.add(new_friendship)
-                db.session.commit()
-            return render_template('friends.html', current_user=current_user)
+                cuser_id = current_user.user_id
+                friend_id = friend.user_id
+                check_friendship = FriendModel.query.filter_by(user_id=cuser_id, friend_id=friend_id).first()
+                check_friendship2 = FriendModel.query.filter_by(user_id=friend_id, friend_id=cuser_id).first()
+                
+                if check_friendship or check_friendship2:
+                    flash(f"User '{friend_name}' is already in your friend's list.", "warning")
+                else:
+                    new_friendship = FriendModel(user_id=cuser_id, friend_id=friend_id)
+                    db.session.add(new_friendship)
+                    db.session.commit()
+                    flash(f"User '{friend_name}' added to your friend's list.", "success")
+        
         if remove_friend:
-            remove_friend = User.query.filter_by(username=remove_friend).first()
-            cuser_id = current_user.user_id
-            friend_id = remove_friend.user_id
-            remove_friendship = FriendModel.query.filter_by(user_id=cuser_id, friend_id=friend_id).first()
-            remove_friendship2 =FriendModel.query.filter_by(user_id=friend_id, friend_id=cuser_id).first()
-            if remove_friendship:
-                db.session.delete(remove_friendship)
-                db.session.commit()
-            elif remove_friendship2:
-                db.session.delete(remove_friendship2)
-                db.session.commit()
-            return render_template('friends.html', current_user=current_user)
+            remove_friend_obj = User.query.filter_by(username=remove_friend).first()
+            if not remove_friend_obj:
+                flash(f"User '{remove_friend}' not found.", "danger")
+            else:
+                cuser_id = current_user.user_id
+                friend_id = remove_friend_obj.user_id
+                remove_friendship = FriendModel.query.filter_by(user_id=cuser_id, friend_id=friend_id).first()
+                remove_friendship2 = FriendModel.query.filter_by(user_id=friend_id, friend_id=cuser_id).first()
+                
+                if remove_friendship:
+                    db.session.delete(remove_friendship)
+                    db.session.commit()
+                    flash(f"Friend '{remove_friend}' removed from your friend's list.", "success")
+                elif remove_friendship2:
+                    db.session.delete(remove_friendship2)
+                    db.session.commit()
+                    flash(f"Friend '{remove_friend}' removed from your friend's list.", "success")
+        
+        return render_template('friends.html', current_user=current_user)
+    
     return render_template('friends.html', current_user=current_user)
-
 @auth.route('/notification', methods=["POST", "GET"])
 def notification():
     if 'username' not in session:

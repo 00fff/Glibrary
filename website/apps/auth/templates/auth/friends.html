@@ -3,6 +3,7 @@
 <title>Friends</title>
 {% block content %}
 <link href="{{ url_for('static', filename='user.css') }}" rel="stylesheet" type="text/css">
+
 {% if current_user %}
     <form action="{{ url_for('auth.friend_search') }}" method="POST" class="form-inline">
         <input class="form-control mr-sm-2" type="search" name="query" placeholder="Search" aria-label="Search">
@@ -12,21 +13,28 @@
 {% else %}
     <p>Current user is not defined.</p>
 {% endif %}
-{% if current_user.friendships %}
+
+{% if current_user and current_user.friendships %}
     <ul>
         {% for friendship in current_user.friendships %}
             <li>
-                <p>{{ friendship.friend.username }} - <a href="{{ url_for('auth.user', username=friendship.friend.username) }}">Visit Friends Page?</a></p>
+                {% if friendship.friend.profile_image %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ friendship.friend.profile_image) }}" alt="Profile Image" width="50">
+                {% endif %}
+                <p>{{ friendship.friend.username }} - <a href="{{ url_for('auth.user', username=friendship.friend.username) }}">Visit Friend's Page?</a></p>
             </li>
         {% endfor %}
     </ul>
 {% endif %}
 
-{% if current_user.user_friends %}
+{% if current_user and current_user.user_friends %}
     <ul>
         {% for friendship in current_user.user_friends %}
             <li>
-                <p>{{ friendship.user.username }} - <a href="{{ url_for('auth.user', username=friendship.user.username) }}">Visit Friends Page?</a></p>
+                {% if friendship.user.profile_image %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ friendship.user.profile_image) }}" alt="Profile Image">
+                {% endif %}
+                <p>{{ friendship.user.username }} - <a href="{{ url_for('auth.user', username=friendship.user.username) }}">Visit Friend's Page?</a></p>
             </li>
         {% endfor %}
     </ul>

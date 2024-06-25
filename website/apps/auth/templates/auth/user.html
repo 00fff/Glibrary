@@ -23,26 +23,26 @@ My Page
 <div class="bottom-half">
     {% if user.profile_image %}
     <img id="pfp" src="{{ url_for('static', filename='uploads/' + user.profile_image) }}" alt="Profile Image">
-{% else %}
+    {% else %}
     <p></p>
-{% endif %}
+    {% endif %}
     <p class="user-name">{{ user.username }} - Number of completed games: {{ completed_games_count }} / {{ user_owned_games|length }}</p>
     <p id="description">{{ user.description }}</p>
 
-{% if user != current_user %}
-    {% if user in current_user.friends or current_user.friendships%}
-    <form action="{{ url_for('auth.friends') }}" method="POST">
-        <button class="removebutton" type="submit">Remove friend</button>
-        <input type="hidden" name="remove_user_name" value="{{ user.username }}">
-    </form>
+    {% if user != current_user %}
+        {% if user in current_user.friendships or current_user.user_friends %}
+            <form action="{{ url_for('auth.friends') }}" method="POST">
+                <button class="removebutton" type="submit">Remove friend</button>
+                <input type="hidden" name="remove_user_name" value="{{ user.username }}">
+            </form>
+        {% elif user not in current_user.friends %}
+            <form action="{{ url_for('auth.friends') }}" method="POST">
+                <button class="addbutton" type="submit">Add friend</button>
+                <input type="hidden" name="added_user_name" value="{{ user.username }}">
+            </form>
+        {% endif %}
     {% else %}
-    <form action="{{ url_for('auth.friends') }}"  method="POST">
-        <button class="addbutton" type="submit">Add friend</button>
-        <input type="hidden" name="added_user_name" value="{{ user.username }}">
-    </form>
-    {% endif %}
-    {% else %}
-    <a href="{{ url_for('auth.edit', username=user.username) }}">Edit Profile</a></li>
+        <a href="{{ url_for('auth.edit', username=user.username) }}">Edit Profile</a>
     {% endif %}
 
     <div class="games-box">
@@ -58,7 +58,7 @@ My Page
             <p id="game-title">{{ user_game.game.title }}</p>
         </div>
         {% endfor %}
-        {% else %}
+    {% else %}
         <h1 id="nogame">No Games In List</h1>
     {% endif %}
     </div>

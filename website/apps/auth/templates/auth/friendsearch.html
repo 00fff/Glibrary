@@ -8,7 +8,11 @@
 {% if found_names %}
     <ul>
     {% for user in found_names %}
-        <li>{{ user.username }} - <a href="{{ url_for('auth.user', username=user.username) }}">Visit Profile</a></li>
+        <li>{% if user.profile_image %}
+            <img src="{{ user.profile_image }}">
+            {% else %}
+            {% endif %}
+             {{ user.username }} - <a href="{{ url_for('auth.user', username=user.username) }}">Visit Profile</a></li>
     {% endfor %}
     </ul>
 {% elif found_names is not none %}
