@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html>
-
-<head> 
+<head>
+    <title>Reset Password</title>
     <link href="{{ url_for('static', filename='nemail.css') }}" rel="stylesheet" type="text/css">
-    <title>Forgot your password, {{ username }}</title>
-    
 </head>
-
 <body>
+    <p>Hello {{ username }},</p>
     
-    <a href="{{ url_for('auth.lost_password') }}">Change Password</a>
+    <p>We received a request to reset your password. Click the link below to reset your password:</p>
+    
+    <p><a href="{{ reset_url }}">Reset Password</a></p>
+    
+    <p>If you did not request a password reset, please ignore this email.</p>
+    
+    <p>Best regards,<br>Your Application Team</p>
 </body>
-
 </html>

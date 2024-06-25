@@ -46,3 +46,4 @@ def create_app():
     app.register_blueprint(data_views.data, url_prefix='/data')
 
     return app
+

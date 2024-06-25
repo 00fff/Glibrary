@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import check_password_hash
 from website.database import db
 from flask_mail import Message
+from itsdangerous import URLSafeTimedSerializer as Serializer
 from website.apps.mail import mail
 import os
 import hashlib
@@ -317,9 +318,51 @@ def lost_password():
     if request.method == "POST":
         email = request.form.get("email")
         user_query = User.query.filter_by(email=email).first()
+        
         if user_query:
-            chpass = render_template('chpass.html', username=user_query.username)
+            # Generate reset token
+            s = Serializer(current_app.config['SECRET_KEY'])
+            token = s.dumps({'user_id': user_query.user_id})
+            
+            # Generate reset URL and send email
+            reset_url = url_for('auth.reset_password', token=token, _external=True)
+            
+            chpass = render_template('chpass.html', username=user_query.username, reset_url=reset_url)
             send_email("Forgot Password?", email, "Click the link to change your password!", chpass)
             
+            flash('Password reset instructions have been sent to your email', 'success')
+        
+        else:
+            flash('Email address not found', 'danger')
+        
         return render_template('lostpass.html')
+    
     return render_template('lostpass.html')
+
+@auth.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if request.method == 'POST':
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+        if new_password != confirm_password:
+            flash('Passwords do not match', 'danger')
+            return render_template('reset_pass.html', token=token)
+        # Verify token and update password
+        if new_password == confirm_password:
+            user = User.verify_reset_token(token)
+            if user:
+                # Update user password
+                user.password = hash_password_sha256(new_password)
+                db.session.commit()
+                
+                flash('Your password has been updated successfully', 'success')
+                return render_template('login.html')
+            else:
+                flash('Invalid or expired token', 'error')
+                return redirect(url_for('auth.forgot_password'))
+        else:
+            flash('Invalid or expired token', 'error')
+            return redirect(url_for('auth.forgot_password'))
+    
+    return render_template('reset_pass.html', token=token)
+    

@@ -1,5 +1,7 @@
-# models.py
+# website/apps/share_models.py
+
 from itsdangerous import URLSafeTimedSerializer as Serializer
+from flask import current_app
 from website.database import db
 from datetime import datetime
 
@@ -24,7 +26,20 @@ class User(db.Model):
         self.description = description
         self.profile_image = profile_image  # Initialize the profile image
 
+    def get_reset_token(self, expires_sec=1800):
+        s = Serializer(current_app.config['SECRET_KEY'], expires_sec)
+        return s.dumps({'user_id': self.user_id}).decode('utf-8')
 
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+            user_id = data.get('user_id')
+        except (TypeError, ValueError):
+            print("type")
+            return None
+        return User.query.get(user_id)
 
 class FriendModel(db.Model):
     __tablename__ = 'user_to_user_association'
