@@ -1,4 +1,4 @@
-from main import app  # Import your Flask app instance
+from app import app  # Import your Flask app instance
 from website.database import db  # Import your SQLAlchemy instance
 
 with app.app_context():
