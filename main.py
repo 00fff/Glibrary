@@ -7,7 +7,7 @@ app = create_app()
 
 if __name__ == "__main__":
     # Run the app using Flask's development server (only for local testing)
-    app.run(debug=True)
+    app.run(debug=False)
 
 # Note: No need to explicitly start the app with gunicorn when deploying to Heroku
 # Heroku will use the command specified in Procfile to start the app with gunicorn
