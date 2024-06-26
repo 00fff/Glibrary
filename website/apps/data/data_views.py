@@ -40,6 +40,11 @@ def search():
 
 @data.route('/game', methods=["POST", "GET"])
 def game():
+    username = session.get('username')
+    existing_user = User.query.filter_by(username=username).first()
+    if not existing_user:
+        flash('User not found!', category='error')
+        return redirect(url_for('auth.login'))
     if request.method == "GET":
         game_name = request.args.get('game')
         game = Game.query.filter_by(title=game_name).first()
