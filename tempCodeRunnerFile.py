@@ -1,3 +1,6 @@
+from website import create_app
+
+app = create_app()
+
 if __name__ == "__main__":
-    # Run the app using Flask's development server (only for local testing)
-    app.run()
+    app.run(host='0.0.0.0', port=80)
