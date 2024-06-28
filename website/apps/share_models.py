@@ -16,8 +16,10 @@ class User(db.Model):
     profile_image = db.Column(db.String(150), nullable=True) 
     
     owned_games = db.relationship('UserGame', back_populates='user', cascade='all, delete-orphan')
-    friendships = db.relationship('FriendModel', foreign_keys='FriendModel.user_id', backref=db.backref('friendships'), cascade='all, delete-orphan')
-    user_friends = db.relationship('FriendModel', foreign_keys='FriendModel.friend_id', backref=db.backref('user_friendships'), cascade='all, delete-orphan')
+    
+    # Define friendships and user_friends relationships correctly
+    friendships = db.relationship('FriendModel', foreign_keys='FriendModel.user_id', back_populates='user_rel', cascade='all, delete-orphan', viewonly=True)
+    user_friends = db.relationship('FriendModel', foreign_keys='FriendModel.friend_id', back_populates='friend_rel', cascade='all, delete-orphan', viewonly=True)
 
     def __init__(self, username, email, password, description='', profile_image=None):
         self.username = username
@@ -41,14 +43,16 @@ class User(db.Model):
             return None
         return User.query.get(user_id)
 
+
 class FriendModel(db.Model):
     __tablename__ = 'user_to_user_association'
     
     user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
     friend_id = db.Column(db.Integer, db.ForeignKey('user.user_id'), primary_key=True)
     
-    user = db.relationship('User', foreign_keys=[user_id], backref='user')
-    friend = db.relationship('User', foreign_keys=[friend_id], backref='friend')
+    # Define user and friend relationships with correct back_populates
+    user_rel = db.relationship('User', foreign_keys=[user_id], back_populates='friendships')
+    friend_rel = db.relationship('User', foreign_keys=[friend_id], back_populates='user_friends')
 
     def __init__(self, user_id, friend_id):
         self.user_id = user_id
@@ -56,24 +60,27 @@ class FriendModel(db.Model):
 
 
 
+
+
+
 class Game(db.Model):
     __tablename__ = 'game'
-    
+
     game_id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(150), unique=True, nullable=False)
-    description = db.Column(db.String(150), nullable=False)
-    art = db.Column(db.String(150), nullable=False)
-    platform = db.Column(db.String(50), nullable=False)
-    genre = db.Column(db.String(50), nullable=False)
+    title = db.Column(db.String(150))  # Adjust the length as per your requirements
+    description = db.Column(db.Text)
+    art = db.Column(db.String)
+    platform = db.Column(db.String)
+    genre = db.Column(db.String)
     release_date = db.Column(db.Date)
-    developer = db.Column(db.String(100))
-    publisher = db.Column(db.String(100))
-    rating = db.Column(db.String(10))
+    developer = db.Column(db.String(150))  # Increase the length as per your needs
+    publisher = db.Column(db.String(150))  # Increase the length as per your needs
+    rating = db.Column(db.Integer)
     
     owners = db.relationship('UserGame', back_populates='game')
 
     def __init__(self, title, description, art, platform, genre, release_date=None, developer=None, publisher=None, rating=None):
-        self.title = title
+        self.title = title[:255]  # Ensure truncation to fit within the new length if needed
         self.description = description
         self.art = art
         self.platform = platform
@@ -82,6 +89,10 @@ class Game(db.Model):
         self.developer = developer
         self.publisher = publisher
         self.rating = rating
+
+
+
+
 
 
 class UserGame(db.Model):

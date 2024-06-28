@@ -231,20 +231,33 @@ def add_game_to_database(game_data):
     check_game = Game.query.filter_by(title=game_data['title']).first()
     if check_game:
         return check_game
+    
+    # Shorten fields that may exceed database column lengths
+    description = game_data['description'][:1000] if game_data['description'] else ""
+    art = game_data['art'][:255] if game_data['art'] else ""
+    platforms = ', '.join(game_data['platforms'])[:255] if game_data['platforms'] else ""
+    genres = ', '.join(game_data['genres'])[:255] if game_data['genres'] else ""
+    developers = ', '.join(game_data['involved_companies'])[:255] if game_data['involved_companies'] else ""
+    
     release_date = None
     if 'first_release_date' in game_data and game_data['first_release_date']:
         release_date = datetime.strptime(game_data['first_release_date'], '%Y-%m-%d').date()
     
     new_game = Game(
         title=game_data['title'],
-        description=game_data['description'],  # Use get method with default value
-        art=game_data['art'],
-        platform=', '.join(game_data['platforms']),
-        genre=', '.join(game_data['genres']),
+        description=description,
+        art=art,
+        platform=platforms,
+        genre=genres,
         release_date=release_date,
-        developer=', '.join(game_data['involved_companies']),
-        publisher=', '.join(game_data['involved_companies']),
+        developer=developers,
+        publisher=developers,  # Assuming publisher is the same as developer in your schema
         rating=game_data['rating']
     )
+    
+
     db.session.add(new_game)
     db.session.commit()
+
+    
+    return new_game
