@@ -20,8 +20,8 @@ def create_app():
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
     app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://u989c2q1mlnpo9:p36e2bdd95b27a991ce6a46bd563bdb73c03aaf39706b88bafe6122f9cd383deb@c5p86clmevrg5s.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d6rrajk3fsj7j9'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://glibrary_postgres_user:onxXhcrJaMgdK0TwSe2TK4DuZOoxdc5S@dpg-cpua6caju9rs73fv9u20-a.oregon-postgres.render.com/glibrary_postgres'
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite3'
     app.config['UPLOAD_DIRECTORY'] = "uploads/"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
